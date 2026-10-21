@@ -10,7 +10,7 @@
 
 <link rel="preload" href="font-cook.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="font-intertight-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="img-models-bene.jpg" as="image">
+<link rel="preload" href="img-rilievo.png" as="image">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="favicon.ico" sizes="any">
@@ -146,12 +146,29 @@
   .mnav a.mn-link b{font-family:var(--sans);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--grigio-n)}
   .mnav .mn-foot{margin-top:34px;font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grigio-n)}
 
+  /* ---------- copertina: pelle e marchio impresso a secco, luce radente in WebGL ---------- */
+  .cover{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#070707 url('img-pelle.jpg') center/cover;display:grid;place-items:center;--lx:50%;--ly:38%}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.2s ease}
+  .cover.gl canvas{opacity:1}
+  .cover.gl .cv-logo,.cover.gl::before{visibility:hidden}
+  .cover::before{content:'';position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;
+    background:radial-gradient(circle at var(--lx) var(--ly),rgba(255,255,255,.5),rgba(255,255,255,0) 42%)}
+  .cv-logo{position:relative;z-index:1;width:min(360px,58vw);aspect-ratio:182.76/196.44;margin-top:-8svh}
+  .cv-logo img{width:100%;height:100%;filter:drop-shadow(0 1px 0 rgba(255,255,255,.13)) drop-shadow(0 -1px 0 rgba(0,0,0,.95))}
+  .cv-sub{position:absolute;left:0;right:0;bottom:clamp(76px,13vh,130px);z-index:2;text-align:center;
+    font-family:var(--voce);font-style:italic;font-size:clamp(15px,1.3vw,19px);color:#9d9d9a;letter-spacing:.01em;opacity:0;animation:cvIn 1.6s ease 2.2s forwards}
+  .cv-scroll{position:absolute;left:50%;bottom:clamp(22px,4vh,38px);transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-weight:600;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#8d8d8a;text-decoration:none;opacity:0;animation:cvIn 1.6s ease 2.8s forwards}
+  .cv-scroll svg{width:8px;height:15px;animation:respira 2.6s ease-in-out infinite}
+  @keyframes respira{50%{transform:translateY(4px);opacity:.5}}
+  @keyframes cvIn{to{opacity:1}}
+
   /* ---------- hero: il volto e la forma, subito ---------- */
   .hero{display:grid;grid-template-columns:1fr 1fr;min-height:max(100svh,660px);background:var(--nero)}
   .hero-txt{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(110px,15vh,150px) 8% clamp(60px,9vh,96px)}
   .hero-txt > :not(.wm,.vk){position:relative;z-index:1}
   .hero-txt .wm{left:34%;top:-4%;font-size:118cqw}
-  .hero h1{font-family:var(--gotico);font-weight:700;font-size:clamp(78px,10.5vw,176px);line-height:.86;letter-spacing:-.005em;margin-left:-.04em}
+  .hero h2{font-family:var(--gotico);font-weight:700;font-size:clamp(78px,10.5vw,176px);line-height:.86;letter-spacing:-.005em;margin-left:-.04em}
   .hero-voce{font-family:var(--voce);font-style:italic;font-size:clamp(22px,2vw,31px);line-height:1.2;margin-top:clamp(18px,3vh,30px)}
   .hero-p{font-size:clamp(15px,1.15vw,17px);line-height:1.55;max-width:38ch;margin-top:16px;color:#2c2c2a}
   .hero-az{display:flex;gap:10px;flex-wrap:wrap;margin-top:clamp(26px,4.5vh,40px)}
@@ -178,7 +195,7 @@
     .hero{grid-template-columns:1fr;min-height:0}
     .hero-foto{order:-1;height:min(125vw,66svh)}
     .hero-txt{padding:42px 22px 54px}
-    .hero h1{font-size:clamp(70px,22vw,110px)}
+    .hero h2{font-size:clamp(70px,22vw,110px)}
     .hero-cap{left:12px;bottom:12px;padding:10px 12px 10px 14px}
     .hero-tick{display:none}
   }
@@ -656,10 +673,18 @@
   <div class="mn-foot">Drop 01 ✦ sette forme, ventidue varianti</div>
 </div>
 
-<section class="hero" id="top" aria-labelledby="heroTit">
+<section class="cover" id="top" aria-label="Copertina">
+  <h1 class="sr-only">KOSHIRA — occhiali in acetato fatti a mano in Italia, Drop 01</h1>
+  <canvas id="pelle" aria-hidden="true"></canvas>
+  <div class="cv-logo"><img src="logo-lockup-black.svg" alt="" width="183" height="196"></div>
+  <p class="cv-sub">Archivio · Drop 01</p>
+  <a class="cv-scroll" href="#apertura">Entra<svg class="s" aria-hidden="true"><use href="#s"/></svg></a>
+</section>
+
+<section class="hero" id="apertura" aria-labelledby="heroTit">
   <div class="pg carta hero-txt">
     <span class="wm" aria-hidden="true">K</span>
-    <h1 class="titolo-g" id="heroTit">Koshira</h1>
+    <h2 class="titolo-g" id="heroTit">Koshira</h2>
     <p class="hero-voce">Precisione giapponese.<br>Linguaggio della strada.</p>
     <p class="hero-p">Sette forme in acetato, fatte a mano in Italia. Una stella sola, in metallo, sulla cerniera. Da vista e da sole, da € 350.</p>
     <div class="hero-az">
@@ -1256,6 +1281,181 @@ function toast(msg){
 }
 
 /* ============================================================
+   COPERTINA — pelle generata al pixel, marchio impresso a secco, stella in metallo.
+   Passo 1 (una volta per dimensione): rilievo della pelle + marchio -> normali in una texture.
+   Passo 2 (ogni fotogramma): luce radente che segue il puntatore, speculare, metallo, grana.
+   Senza WebGL resta la copertina fotografica (classe .gl assente).
+   ============================================================ */
+(() => {
+  const sec = document.getElementById('top'), cv = document.getElementById('pelle');
+  const gl = cv.getContext('webgl', { antialias:false, alpha:false, premultipliedAlpha:false, powerPreference:'high-performance' });
+  if (!gl) return;
+  const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  const COMMON = `precision highp float;
+    float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+    vec2 h22(vec2 p){float n=h21(p);return vec2(n,h21(p+n+17.17));}
+    float vn(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);
+      return mix(mix(h21(i),h21(i+vec2(1,0)),u.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),u.x),u.y);}
+    float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*vn(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}`;
+  const FS1 = COMMON + `
+    uniform vec2 uRes;uniform float uDpr;uniform sampler2D uLogo;uniform vec4 uRect;
+    vec2 vor(vec2 x){vec2 n=floor(x),f=fract(x);float f1=8.,f2=8.;
+      for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec2 g=vec2(float(i),float(j));vec2 o=h22(n+g);o=.5+.42*sin(6.2831*o);
+        vec2 r=g+o-f;float d=dot(r,r);if(d<f1){f2=f1;f1=d;}else if(d<f2){f2=d;}}
+      return vec2(sqrt(f1),sqrt(f2));}
+    float svor(vec2 x){vec2 n=floor(x),f=fract(x);float r=0.;
+      for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec2 g=vec2(float(i),float(j));vec2 o=h22(n+g);o=.5+.4*sin(6.2831*o);
+        float d=length(g+o-f);r+=exp(-14.*d);}
+      return -log(r)/14.;}
+    float leather(vec2 px){
+      vec2 p=px/(uDpr*(11.+4.*fbm(px/(uDpr*380.))));
+      p+=vec2(fbm(p*.12),fbm(p*.12+7.3))*1.5;
+      float f=svor(p);
+      float h=pow(clamp(1.-f*1.55,0.,1.),.55);
+      vec2 v2=vor(px/(uDpr*5.5)+13.1);
+      h+=.07*smoothstep(0.,.35,v2.y-v2.x)-.035;
+      h+=.05*(vn(px/(uDpr*1.3))-.5);
+      h+=.7*(fbm(px/(uDpr*300.))-.5);
+      return h;}
+    vec3 logo(vec2 px){vec2 uv=(px-uRect.xy)/uRect.zw;
+      if(uv.x<0.||uv.y<0.||uv.x>1.||uv.y>1.)return vec3(0.);
+      return texture2D(uLogo,vec2(uv.x,1.-uv.y)).rgb;}
+    float H(vec2 px,out float pr,out float st){
+      vec3 L=logo(px);
+      pr=smoothstep(.02,.45,L.g);
+      st=smoothstep(.1,.32,L.b);
+      float h=leather(px)*(1.-.94*pr)+.03*(vn(px/(uDpr*2.))-.5)*pr;
+      h-=1.1*L.g+.45*L.r;
+      h=mix(h,.45+.9*sqrt(clamp((L.b-.1)/.9,0.,1.)),st);
+      return h;}
+    void main(){vec2 px=gl_FragCoord.xy;float pr,st,a,b;
+      float h=H(px,pr,st);float hx=H(px+vec2(1.,0.),a,b);float hy=H(px+vec2(0.,1.),a,b);
+      float k=1.7/uDpr;
+      vec3 n=normalize(vec3((h-hx)*k,(h-hy)*k,1.));
+      gl_FragColor=vec4(n.xy*.5+.5,clamp(h*.3+.5,0.,1.),mix(pr*.6,1.,st));}`;
+  const FS2 = COMMON + `
+    uniform sampler2D uSurf;uniform vec2 uRes;uniform vec3 uLight;uniform float uInt,uTime,uDpr;
+    void main(){vec2 uv=gl_FragCoord.xy/uRes;vec4 s=texture2D(uSurf,uv);
+      vec3 n;n.xy=s.xy*2.-1.;n.z=sqrt(max(1.-dot(n.xy,n.xy),0.));
+      float h=(s.z-.5)/.3;float st=smoothstep(.8,.97,s.w);float pr=clamp(s.w/.6,0.,1.)*(1.-st);
+      vec3 pos=vec3(gl_FragCoord.xy,h*5.*uDpr);
+      vec3 Lv=uLight-pos;float d=length(Lv);vec3 l=Lv/d;
+      float R=.62*min(uRes.x,uRes.y);float att=uInt/(1.+pow(d/R,2.4));
+      vec3 v=vec3(0.,0.,1.),hv=normalize(l+v);
+      float ndl=max(dot(n,l),0.);
+      float ao=mix(.5,1.,smoothstep(-.6,.7,h));
+      vec3 alb=mix(vec3(.0125,.012,.0115),vec3(.0035,.0034,.0033),pr);
+      float sh=mix(14.,90.,pr),ks=mix(.075,.22,pr);
+      float spec=pow(max(dot(n,hv),0.),sh)*ks*(sh+8.)/30.;
+      vec3 col=alb*(.07+3.2*ndl*att)*ao+vec3(1.,.96,.9)*spec*att*ao;
+      col+=alb*.25*max(dot(n,normalize(vec3(-.5,.7,.55))),0.);
+      col+=vec3(.5,.5,.55)*pow(1.-n.z,2.5)*.035*att;
+      vec3 r=reflect(-v,n);
+      float env=.04+.95*smoothstep(-.35,.9,r.y*.55+r.x*.35+.25)*(.6+.4*sin(r.x*9.+uTime*.25));
+      float spm=pow(max(dot(n,hv),0.),220.)*9.;
+      vec3 metal=vec3(.72,.73,.75)*(env*.3+ndl*att*.9)+vec3(1.)*spm*att*.5+vec3(.9)*pow(1.-n.z,3.)*.3;
+      col=mix(col,metal,st);
+      col=vec3(1.)-exp(-col*1.9);
+      col=pow(col,vec3(.4545));
+      vec2 q=(uv-.5)*vec2(uRes.x/uRes.y,1.);
+      col*=mix(.42,1.,smoothstep(1.15,.25,length(q)));
+      col+=(h21(gl_FragCoord.xy+fract(uTime*7.)*91.)-.5)*.016;
+      gl_FragColor=vec4(col,1.);}`;
+  function prog(fs){
+    const p = gl.createProgram();
+    [[gl.VERTEX_SHADER,VS],[gl.FRAGMENT_SHADER,fs]].forEach(([t,src]) => {
+      const sh = gl.createShader(t); gl.shaderSource(sh, src); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh);
+    });
+    gl.linkProgram(p); return p;
+  }
+  let P1, P2;
+  try { P1 = prog(FS1); P2 = prog(FS2); } catch(e){ return; }
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  const draw = p => { const a = gl.getAttribLocation(p, 'p'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+  const U = (p, n) => gl.getUniformLocation(p, n);
+  const tex = () => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.LINEAR));
+    [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE)); return t; };
+  const logoT = tex();
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,255]));
+  const surfT = tex(), fbo = gl.createFramebuffer();
+  let W = 0, Hh = 0, dpr = 1, ready = false;
+
+  function bake(){
+    const r = sec.getBoundingClientRect();
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    if (r.width * r.height * dpr * dpr > 4.2e6) dpr = Math.sqrt(4.2e6 / (r.width * r.height));
+    W = Math.round(r.width * dpr); Hh = Math.round(r.height * dpr);
+    cv.width = W; cv.height = Hh;
+    gl.bindTexture(gl.TEXTURE_2D, surfT);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, Hh, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, surfT, 0);
+    gl.viewport(0, 0, W, Hh);
+    gl.useProgram(P1);
+    /* il marchio: largo come la versione HTML, un po' sopra il centro */
+    const lw = Math.min(360, r.width * .58) * dpr, lh = lw * 196.44 / 182.76;
+    const cy = Hh * .5 + .08 * Hh;
+    gl.uniform2f(U(P1,'uRes'), W, Hh); gl.uniform1f(U(P1,'uDpr'), dpr);
+    gl.uniform4f(U(P1,'uRect'), W / 2 - lw / 2, cy - lh / 2, lw, lh);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, logoT); gl.uniform1i(U(P1,'uLogo'), 0);
+    draw(P1);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    ready = true;
+  }
+
+  /* luce: entra dall'alto a sinistra e trova il marchio; poi segue il puntatore, o gira da sola */
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t0 = performance.now(), last = -1e9, ptr = null, lx = -0.15, ly = 1.15, vis = true, scrollP = 0;
+  sec.addEventListener('pointermove', e => { const r = sec.getBoundingClientRect(); ptr = [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height]; last = performance.now(); });
+  sec.addEventListener('pointerdown', e => { const r = sec.getBoundingClientRect(); ptr = [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height]; last = performance.now(); });
+  new IntersectionObserver(e => vis = e[0].isIntersecting).observe(sec);
+  addEventListener('scroll', () => { scrollP = Math.min(1, Math.max(0, scrollY / innerHeight)); }, { passive: true });
+
+  function frame(now){
+    requestAnimationFrame(frame);
+    if (!ready || !vis || document.hidden) return;
+    const t = (now - t0) / 1000;
+    const intro = Math.min(1, Math.max(0, (t - .15) / 2.4)), e = 1 - Math.pow(1 - intro, 3);
+    let tx, ty;
+    if (ptr && now - last < 2600){ tx = ptr[0]; ty = ptr[1]; }
+    else { tx = .5 + Math.cos(t * .32) * .3; ty = .6 + Math.sin(t * .47) * .2; }
+    if (intro < 1){ tx = -.15 + (.68 - -.15) * e; ty = 1.15 + (.7 - 1.15) * e; }
+    const k = ptr && now - last < 2600 ? .09 : .025;
+    lx += (tx - lx) * (intro < 1 ? 1 : k); ly += (ty - ly) * (intro < 1 ? 1 : k);
+    const z = (.38 - .2 * scrollP) * Math.min(W, Hh);
+    gl.viewport(0, 0, W, Hh);
+    gl.useProgram(P2);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, surfT); gl.uniform1i(U(P2,'uSurf'), 0);
+    gl.uniform2f(U(P2,'uRes'), W, Hh); gl.uniform1f(U(P2,'uDpr'), dpr);
+    gl.uniform3f(U(P2,'uLight'), lx * W, ly * Hh, z);
+    gl.uniform1f(U(P2,'uInt'), (.15 + .85 * e) * (1 - .35 * scrollP));
+    gl.uniform1f(U(P2,'uTime'), t);
+    draw(P2);
+    if (REDUCE && intro >= 1) ready = false;   /* movimento ridotto: un solo fotogramma fermo */
+  }
+  const img = new Image();
+  img.onload = () => {
+    gl.bindTexture(gl.TEXTURE_2D, logoT);
+    gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+    bake(); { const r = sec.getBoundingClientRect(); lastSize = Math.round(r.width) + 'x' + Math.round(r.height); }
+    sec.classList.add('gl'); t0 = performance.now();
+    if (REDUCE){ t0 -= 5000; }
+    requestAnimationFrame(frame);
+  };
+  img.src = 'img-rilievo.png';
+  /* si rifà il rilievo solo se cambia davvero la copertina (non per la barra degli indirizzi del telefono) */
+  let rz, lastSize = '';
+  addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
+    const r = sec.getBoundingClientRect(), k = Math.round(r.width) + 'x' + Math.round(r.height);
+    if (k === lastSize) return; lastSize = k; bake(); if (REDUCE) ready = true; }, 160); });
+})();
+
+/* ============================================================
    HERO — sette volti, uno alla volta: chi lo indossa, cosa indossa, quanto costa
    ============================================================ */
 (() => {
@@ -1336,10 +1536,10 @@ const SWATCH = {
 
 /* ---------- il pulsante di richiesta compare dopo la prima schermata ---------- */
 (() => {
-  const fab = document.getElementById('fab'), hero = document.getElementById('top'), dove = document.getElementById('dove');
+  const fab = document.getElementById('fab'), hero = document.getElementById('apertura'), dove = document.getElementById('dove');
   let pastHero = false, atDove = false;
   const upd = () => fab.classList.toggle('on', pastHero && !atDove);
-  new IntersectionObserver(e => { pastHero = !e[0].isIntersecting; upd(); }).observe(hero);
+  new IntersectionObserver(e => { pastHero = !e[0].isIntersecting && e[0].boundingClientRect.top < 0; upd(); }).observe(hero);
   new IntersectionObserver(e => { atDove = e[0].isIntersecting; upd(); }, { threshold: .15 }).observe(dove);
 })();
 
