@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Informazioni — KOSHIRA</title>
 <meta name="description" content="Informazioni su KOSHIRA, marchio di Fraben S.r.l.: prezzi, punti vendita, garanzia legale e conformità dei prodotti.">
 <meta name="theme-color" content="#0b0b0a">
@@ -32,6 +32,10 @@
     gap:16px;padding:18px clamp(16px,2.4vw,34px);background:var(--nero);color:#fff}
   header img{width:112px}
   header a{font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:#fff}
+  html{-webkit-tap-highlight-color:transparent}
+  .testata{position:relative;height:clamp(180px,26vh,260px);background:#070707 url('img-pelle.webp') center/cover;display:grid;place-items:center}
+  .testata::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 30%,rgba(0,0,0,.6))}
+  .testata img{position:relative;z-index:1;width:clamp(70px,8vw,96px);opacity:.92}
   main{max-width:760px;margin:0 auto;padding:clamp(70px,11vh,110px) 22px 110px}
   .star{display:block;width:16px;margin:0 auto 26px;fill:var(--ink)}
   h1{font-family:var(--gotico);font-weight:700;font-size:clamp(40px,6vw,64px);line-height:1.02;text-align:center;margin-bottom:20px}
@@ -58,7 +62,7 @@
   footer b{color:#e2e2df;font-weight:600}
   footer .nav{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase}
   footer .nav a{color:#8d8d8a;text-decoration:none;padding:6px 2px}
-  footer .nav a:hover{color:#fff}
+  @media(hover:hover) and (pointer:fine){ footer .nav a:hover{color:#fff} }
   footer .dati summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;padding:6px 2px;
     font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8d8d8a}
   footer .dati summary::-webkit-details-marker{display:none}
@@ -74,6 +78,7 @@
   <a href="index.html">← Torna al sito</a>
 </header>
 
+<div class="testata" aria-hidden="true"><img src="logo-lockup-white.svg" alt=""></div>
 <main>
   <svg class="star" viewBox="-27 -53 54 100" aria-hidden="true"><path d="M0,-50 Q4,-5 24,0 Q4,5 0,44 Q-4,5 -24,0 Q-4,-5 0,-50Z"/></svg>
   <h1>Il brand,<br>i prezzi, i negozi</h1>

@@ -25,9 +25,9 @@
 <meta property="og:description" content="Sette forme, ventidue varianti, una stella sola. Occhiali in acetato fatti a mano in Italia.">
 <meta property="og:image" content="https://drugobi.github.io/KOSHIRA2/img-og.jpg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="1200">
-<meta property="og:image:alt" content="Il monogramma KOSHIRA su pelle nera">
-<meta name="twitter:card" content="summary">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Il monogramma KOSHIRA impresso a secco su pelle nera">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="KOSHIRA — Eyewear ✦ Drop 01">
 <meta name="twitter:description" content="Sette forme, ventidue varianti, una stella sola. Occhiali in acetato fatti a mano in Italia.">
 <meta name="twitter:image" content="https://drugobi.github.io/KOSHIRA2/img-og.jpg">
@@ -148,7 +148,7 @@
   .mnav .mn-foot{margin-top:34px;font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grigio-n)}
 
   /* ---------- copertina: pelle e marchio impresso a secco, luce radente in WebGL ---------- */
-  .cover{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#070707 url('img-pelle.jpg') center/cover;display:grid;place-items:center;--lx:50%;--ly:38%}
+  .cover{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#070707 url('img-pelle.webp') center/cover;display:grid;place-items:center;--lx:50%;--ly:38%}
   .cover canvas{position:absolute;inset:-3%;width:106%;height:106%;display:block;opacity:0;transition:opacity 1.2s ease;will-change:transform}
   .cover.gl canvas{opacity:1}
   .cover.gl .cv-logo,.cover.gl::before{visibility:hidden}
@@ -536,6 +536,8 @@
   .neg article::after{content:'';position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .6s ease;
     background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.72) 40%,rgba(0,0,0,.92) 100%)}
   .neg .logo{position:absolute;left:0;right:0;top:16%;height:38%;display:grid;place-items:center;padding:0 clamp(28px,4vw,52px);transition:opacity .45s ease}
+  .neg .logo-t{font-weight:500;font-size:clamp(30px,3.2vw,44px);letter-spacing:.08em;text-transform:uppercase;color:#2a2a28}
+  .neg .logo-t b{font-weight:700}
   .neg .logo img{max-width:100%;max-height:100%;width:auto;margin:0 auto;object-fit:contain;filter:grayscale(1)}
   @media(hover:hover) and (pointer:fine){ .neg article:hover{color:#fff;background:#000} }
   @media(hover:hover) and (pointer:fine){ .neg article:hover .foto{opacity:1;transform:scale(1)} }
@@ -554,7 +556,7 @@
   .dove-nota a{color:var(--ink)}
 
   /* ---------- retro: pelle, motto, indice ---------- */
-  footer{position:relative;background:#0a0a0a url('img-pelle.jpg') center/cover;color:#cfcfcc;padding:clamp(100px,16vh,170px) clamp(18px,3vw,40px) 40px;text-align:center;overflow:hidden}
+  footer{position:relative;background:#0a0a0a url('img-pelle.webp') center/cover;color:#cfcfcc;padding:clamp(100px,16vh,170px) clamp(18px,3vw,40px) 40px;text-align:center;overflow:hidden}
   footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(255,255,255,.05),transparent 60%),linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55));pointer-events:none}
   footer > *{position:relative}
   footer .lock{width:clamp(96px,9vw,128px);margin:0 auto}
@@ -591,10 +593,26 @@
   .ov-img{position:relative;overflow:hidden;container-type:inline-size;background-color:var(--carta);background-image:var(--carta-bg)}
   .ov-img .wm{top:-8%;left:var(--wx,20%)}
   .gal{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
-  .gal .stage{flex:1;display:grid;place-items:center;min-height:min(60vw,560px);position:relative}
-  .gal .main{width:100%;height:100%;position:absolute;inset:0;object-fit:cover}
-  .gal .main.cut{object-fit:contain;padding:0 9%;filter:drop-shadow(0 20px 26px rgba(0,0,0,.15))}
+  .gal .stage{flex:1;display:grid;place-items:center;min-height:min(60vw,560px);position:relative;perspective:1100px;touch-action:pan-y;overflow:hidden}
+  .gal .main{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;opacity:0;transition:opacity .55s ease,transform .9s var(--ease)}
+  .gal .main.on{opacity:1}
+  .gal .main.cut{object-fit:contain;padding:0 9%;filter:drop-shadow(0 26px 22px rgba(0,0,0,.16));
+    transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)) translateY(var(--ty,0px)) scale(var(--s,1));transition:opacity .55s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+  .gal .main.cut:not(.on){--s:.94;--ty:14px}
   .gal .main.ritratto{object-position:50% 26%}
+  .gal .ombra{position:absolute;left:22%;right:22%;bottom:22%;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.18),transparent);
+    filter:blur(6px);transform:translateX(calc(var(--ry,0deg) / 1deg * -1.4px));transition:opacity .4s;pointer-events:none}
+  .gal .stage:not(.su-cut) .ombra,.gal .stage:not(.su-cut) ~ * .wm{opacity:0}
+  .gal .giro{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-weight:600;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--grigio);pointer-events:none;transition:opacity .4s}
+  .gal .stage:not(.su-cut) .giro{opacity:0}
+  /* colori in scheda: un pallino e il nome */
+  .chip.col{display:inline-flex;align-items:center;gap:9px;padding:0 14px 0 10px}
+  .chip.col i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22);flex:none}
+  .chip.col.on i{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+  /* misure: il disegno del frontale, quotato */
+  .mis-svg{display:block;width:100%;max-width:440px;height:auto;margin-top:4px;color:var(--ink)}
+  .mis-svg text{font-family:var(--sans);font-weight:600;font-size:10px;letter-spacing:.06em;fill:var(--ink)}
+  .mis-svg text.l{font-size:7.5px;letter-spacing:.16em;fill:var(--grigio)}
   .thumbs{display:flex;gap:1px;background:var(--linea);border-top:1px solid var(--linea)}
   .th{flex:1;padding:0;background:var(--carta);opacity:.5;transition:opacity .2s}
   @media(hover:hover) and (pointer:fine){ .th.on,.th:hover{opacity:1} }
@@ -749,7 +767,18 @@
     .toast.show{transform:translateX(-50%)}
     .vt-head,.sez-head{margin-bottom:22px}
   }
+  /* =================== ingresso delle sezioni =================== */
+  .js .rv{opacity:0;transform:translateY(28px);transition:opacity 1s ease var(--rd,0ms),transform 1.2s var(--ease) var(--rd,0ms)}
+  .js .rv.in{opacity:1;transform:none}
+  /* i titoli gotici si scoprono dal basso, come una lama di luce */
+  .js .rvt{clip-path:inset(0 0 100% 0);transform:translateY(.18em);transition:clip-path 1.1s var(--ease) var(--rd,0ms),transform 1.2s var(--ease) var(--rd,0ms)}
+  .js .rvt.in{clip-path:inset(-.2em -.1em -.25em -.1em);transform:none}
+  .js .rvi{clip-path:inset(12% 12% 12% 12%);transition:clip-path 1.4s var(--ease) var(--rd,0ms)}
+  .js .rvi.in{clip-path:inset(0 0 0 0)}
+  .js .rvi img{transform:scale(1.12);transition:transform 1.8s var(--ease) var(--rd,0ms)}
+  .js .rvi.in img{transform:none}
   @media(prefers-reduced-motion:reduce){
+    .js .rv,.js .rvt,.js .rvi,.js .rvi img{opacity:1;transform:none;clip-path:none}
     *{animation:none!important;transition:none!important}
     .man p{opacity:1;transform:none}
   }
@@ -881,7 +910,7 @@
     <span class="vk" aria-hidden="true">コシラ</span>
   </div>
   <div class="foto">
-    <img src="img-bw-shoji.jpg" loading="lazy" decoding="async" alt="Una silhouette con gli occhiali davanti a una parete shoji illuminata" width="1200" height="1600">
+    <img src="img-bw-shoji.webp" loading="lazy" decoding="async" alt="Una silhouette con gli occhiali davanti a una parete shoji illuminata" width="1200" height="1600">
     <span class="jv" aria-hidden="true">コシラ</span>
     <span class="jl" aria-hidden="true">Koshira · Archivio · Drop 01</span>
   </div>
@@ -894,15 +923,15 @@
   </div>
   <div class="tre">
     <figure>
-      <span class="im"><img src="img-bw-atelier.jpg" loading="lazy" decoding="async" alt="Due mani limano a mano una montatura di acetato sul banco di lavoro" width="1200" height="1600"></span>
+      <span class="im"><img src="img-bw-atelier.webp" loading="lazy" decoding="async" alt="Due mani limano a mano una montatura di acetato sul banco di lavoro" width="1200" height="1600"></span>
       <figcaption><h3>A mano, in Italia</h3><p>Ogni montatura nasce da un blocco pieno di acetato: tagliata, limata, lucidata a mano. Le forme più essenziali sono quelle che chiedono più tempo.</p></figcaption>
     </figure>
     <figure>
-      <span class="im"><img src="img-bw-e0077.jpg" loading="lazy" decoding="async" alt="La stella in metallo sulla cerniera di un occhiale nero" width="1200" height="1600" style="object-position:40% 50%"></span>
+      <span class="im"><img src="img-bw-e0077.webp" loading="lazy" decoding="async" alt="La stella in metallo sulla cerniera di un occhiale nero" width="1200" height="1600" style="object-position:40% 50%"></span>
       <figcaption><h3>Una stella sola</h3><p>Né stampata né incisa: un elemento in metallo, montato dove l’asta incontra il frontale. L’unico ornamento. La firma.</p></figcaption>
     </figure>
     <figure>
-      <span class="im"><img src="img-bw-e0053.jpg" loading="lazy" decoding="async" alt="Un Julian appoggiato sull'astuccio in pelle con la scritta KOSHIRA" width="1200" height="1600" style="object-position:58% 60%"></span>
+      <span class="im"><img src="img-bw-e0053.webp" loading="lazy" decoding="async" alt="Un Julian appoggiato sull'astuccio in pelle con la scritta KOSHIRA" width="1200" height="1600" style="object-position:58% 60%"></span>
       <figcaption><h3>Il nome sull’asta</h3><p>Ogni forma porta il proprio nome sull’asta. Nella scatola, un astuccio rigido in pelle e un panno con le iniziali. Nient’altro.</p></figcaption>
     </figure>
   </div>
@@ -980,9 +1009,9 @@
 
     <div class="neg">
       <article>
-        <img class="foto" src="img-negozio-italianoptic.jpg" loading="lazy" decoding="async"
+        <img class="foto" src="img-negozio-italianoptic.webp" loading="lazy" decoding="async"
              alt="L'interno del negozio ItalianOptic a Curno">
-        <span class="logo" aria-hidden="true"><img src="img-logo-italianoptic.png" width="900" height="323" loading="lazy" decoding="async" alt=""></span>
+        <span class="logo" aria-hidden="true"><span class="logo-t">Italian<b>Optic</b></span></span>
         <span class="citta">Curno · Bergamo</span>
         <h3>ItalianOptic</h3>
         <p>Via Bergamo 32<br>24035 Curno (BG)</p>
@@ -993,7 +1022,7 @@
         </div>
       </article>
       <article>
-        <img class="foto" src="img-negozio-otticaluce.jpg" loading="lazy" decoding="async"
+        <img class="foto" src="img-negozio-otticaluce.webp" loading="lazy" decoding="async"
              alt="L'interno del negozio Ottica Luce a Treviglio">
         <span class="logo" aria-hidden="true"><img src="img-logo-otticaluce.png" width="900" height="403" loading="lazy" decoding="async" alt=""></span>
         <span class="citta">Treviglio · Bergamo</span>
@@ -1063,7 +1092,7 @@
       <p class="desc" id="ovDesc"></p>
       <div id="misBlock" style="display:none">
         <div class="sel-label" style="margin-bottom:8px">Misure</div>
-        <div class="mis" id="ovMis"></div>
+        <div id="ovMis"></div>
         <p class="mis-note" id="ovMisNote"></p>
       </div>
       <div class="sel-label">Variante</div>
@@ -1098,6 +1127,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+document.documentElement.classList.add('js');
 /* ============================================================
    CATALOGO
    finiture: {Vista:cartella, Sole:cartella} oppure {unica:cartella}
@@ -1109,46 +1139,46 @@
    libro: variante mostrata in collezione, frase del booklet, posizione della lettera gotica
    ============================================================ */
 const MODELLI = [
-  { id:'bene', ritratto:'img-models-bene.jpg', indossa:{vi:0, fin:'unica'}, nome:'Benè', prezzo:null, lente:'Sole', lettera:'B',
-    desc:'Compatto e deciso. Un pezzo unico nel drop: nero, lenti sfumate, da sole.',
+  { id:'bene', ritratto:'img-models-bene.webp', indossa:{vi:0, fin:'unica'}, nome:'Benè', prezzo:null, lente:'Sole', lettera:'B',
+    desc:'Compatto, deciso, senza alternative. Benè esiste in un’unica versione: acetato nero, lenti sfumate, da sole.',
     libro:{ vi:0, fin:'unica', wm:[28,3], claim:'Compatto e deciso.', cap:'Un pezzo unico nel drop: nero, lenti sfumate, da sole.' },
     varianti:[ {codice:'01', colore:'Nero', finiture:{unica:22}} ] },
-  { id:'alone', ritratto:'img-models-alone.jpg', indossa:{vi:0, fin:'unica'}, nome:'Alone.', prezzo:null, lente:'Sole', lettera:'A',
-    desc:'Non alza mai la voce. Doppio ponte e lenti piene, in nero, tartaruga chiara o marrone trasparente. Non ha bisogno di farsi notare: succede da sé.',
+  { id:'alone', ritratto:'img-models-alone.webp', indossa:{vi:0, fin:'unica'}, nome:'Alone.', prezzo:null, lente:'Sole', lettera:'A',
+    desc:'Non alza mai la voce: si fa notare da sé. Doppio ponte e lenti piene, in nero, tartaruga chiara o marrone trasparente.',
     libro:{ vi:0, fin:'unica', wm:[27,4], claim:'Non alza mai la voce.', cap:'Nero, doppio ponte, lenti bordeaux. Non ha bisogno di farsi notare: succede da sé.' },
     varianti:[
       {codice:'01', colore:'Nero', finiture:{unica:14}},
       {codice:'02', colore:'Tartaruga chiara', finiture:{unica:17}},
       {codice:'03', colore:'Marrone trasparente', finiture:{unica:15}} ] },
-  { id:'robin', ritratto:'img-models-robin.jpg', indossa:{vi:0, fin:'unica'}, nome:'Robin', prezzo:450, lente:'Sole', lettera:'R',
-    desc:'Il cerchio solo nella parte alta: sotto, la lente resta libera. Frontale nero, lenti azzurre, cerniere in metallo a vista. L’unico così nel drop.',
+  { id:'robin', ritratto:'img-models-robin.webp', indossa:{vi:0, fin:'unica'}, nome:'Robin', prezzo:450, lente:'Sole', lettera:'R',
+    desc:'Una linea sola, sopra lo sguardo; sotto, la lente resta libera. Frontale nero, lenti azzurre, cerniere in metallo a vista. Il più raro del Drop 01.',
     libro:{ vi:0, fin:'unica', wm:[25,1], claim:'Il cerchio solo nella parte alta: sotto, la lente resta libera.', cap:'Frontale nero, lenti azzurre. L’unico così nel drop.' },
     varianti:[ {codice:'01', colore:'Nero', finiture:{unica:1}} ] },
-  { id:'anuar', ritratto:'img-models-anuar.jpg', indossa:{vi:0, fin:'unica'}, nome:'Anuar', prezzo:null, lente:'Sole', lettera:'A', layout:'poster',
-    desc:'Squadrato, frontale spesso, spalle larghe. Nero, tartarugato o verde oliva trasparente. Non si nasconde e non lo chiede a te.',
+  { id:'anuar', ritratto:'img-models-anuar.webp', indossa:{vi:0, fin:'unica'}, nome:'Anuar', prezzo:null, lente:'Sole', lettera:'A', layout:'poster',
+    desc:'Spalle larghe, frontale pieno, angoli netti. Non si nasconde e non lo chiede a te. In nero, tartarugato o verde oliva trasparente.',
     misure:{ c:50, p:22, a:145, base:4, scheda:'KSA02' },
     libro:{ vi:2, fin:'unica', claim:'Squadrato, frontale spesso, spalle larghe.', cap:'Verde oliva trasparente, lenti sfumate. Non si nasconde e non lo chiede a te.' },
     varianti:[
       {codice:'01', colore:'Nero', finiture:{unica:2}},
       {codice:'02', colore:'Tartarugato', finiture:{unica:20}},
       {codice:'03', colore:'Verde oliva', finiture:{unica:11}} ] },
-  { id:'riri', ritratto:'img-models-riri.jpg', indossa:{vi:1, fin:'Sole'}, nome:'Riri', prezzo:null, foto:'img-bw-riri.jpg', lettera:'R', layout:'rossa',
-    desc:'Doppio ponte e goccia da aviatore, con il nome in corsivo sull’asta. Da vista o da sole in nero e tartarugato; e poi il rosso trasparente, senza chiedere permesso.',
+  { id:'riri', ritratto:'img-models-riri.webp', indossa:{vi:1, fin:'Sole'}, nome:'Riri', prezzo:null, foto:'img-bw-riri.webp', lettera:'R', layout:'rossa',
+    desc:'La goccia dell’aviatore, riscritta. Doppio ponte, nome in corsivo sull’asta. In nero e tartarugato, da vista o da sole; e in rosso trasparente, senza chiedere permesso.',
     misure:{ c:56, p:11, a:145, base:4, scheda:'KSA01' },
     libro:{ vi:2, fin:'unica', wm:[-14,5], claim:'Rosso. Senza chiedere permesso.', cap:'Doppio ponte e goccia da aviatore, in acetato rosso trasparente. Lo metti per vedere meglio. Ti guardano tutti per lo stesso motivo.' },
     varianti:[
       {codice:'01', colore:'Nero', finiture:{Vista:12, Sole:16}},
       {codice:'02', colore:'Tartarugato', finiture:{Vista:6, Sole:4}},
       {codice:'03', colore:'Rosso trasparente', finiture:{unica:5}, lente:'Vista'} ] },
-  { id:'julian', ritratto:'img-models-julian.jpg', indossa:{vi:2, fin:'Vista'}, nome:'Julian', prezzo:null, lettera:'J',
-    desc:'Tondo e compatto, il pezzo più versatile dell’archivio. Nero, tartarugato o grigio-blu, da vista o da sole. Il colore lo mette la lente, l’atteggiamento ce lo metti tu.',
+  { id:'julian', ritratto:'img-models-julian.webp', indossa:{vi:2, fin:'Vista'}, nome:'Julian', prezzo:null, lettera:'J',
+    desc:'Tondo, compatto, il più versatile dell’archivio. Il colore lo mette la lente; l’atteggiamento, chi lo indossa. In nero, tartarugato o grigio-blu, da vista o da sole.',
     libro:{ vi:1, fin:'Sole', wm:[-11,4], claim:'Luce calda. Sguardo freddo.', cap:'Tartarugato, lenti ambra. Il colore lo mette la lente. L’atteggiamento ce lo metti tu.' },
     varianti:[
       {codice:'01', colore:'Nero', finiture:{Vista:9, Sole:18}},
       {codice:'02', colore:'Tartarugato', finiture:{Vista:8, Sole:3}},
       {codice:'03', colore:'Grigio-blu', finiture:{Vista:7, Sole:19}} ] },
-  { id:'joel', ritratto:'img-models-joel.jpg', indossa:{vi:1, fin:'unica'}, nome:'Joel', prezzo:null, lettera:'J',
-    desc:'Un rettangolo pulito, senza concessioni. Nero da vista o da sole, oppure cristallo. Tutto intorno corre: lo sguardo no.',
+  { id:'joel', ritratto:'img-models-joel.webp', indossa:{vi:1, fin:'unica'}, nome:'Joel', prezzo:null, lettera:'J',
+    desc:'Un rettangolo esatto, senza concessioni. Tutto intorno corre: lo sguardo no. In nero, da vista o da sole, e in cristallo.',
     libro:{ vi:0, fin:'Sole', wm:[19,2], claim:'Un rettangolo pulito, senza concessioni.', cap:'Nero, lenti grigie. Tutto intorno corre: lo sguardo no.' },
     varianti:[
       {codice:'01', colore:'Nero', finiture:{Vista:10, Sole:21}},
@@ -1160,7 +1190,7 @@ const SCONTORNO = {22:22, 14:19, 17:21, 15:20, 1:1, 2:2, 20:4, 11:3, 12:14, 16:1
                    9:8, 18:9, 8:7, 3:5, 7:6, 19:10, 10:16, 21:18, 13:17};
 const CUT = c => `img-cut-${String(SCONTORNO[c]).padStart(2,'0')}.webp`;
 
-const P=(c,n)=>`img-${c}-${n}.jpg`;
+const P=(c,n)=>`img-${c}-${n}.webp`;
 const imgs = c => [1,2,3].map(n => P(c,n));
 const fmt = p => p==null ? '— €' : '€ ' + p.toFixed(0);
 const STAR = '<svg class="s" aria-hidden="true"><use href="#s"/></svg>';
@@ -1188,6 +1218,22 @@ MODELLI.forEach((m, mi) => m.varianti.forEach((v, vi) =>
 const numDi = (mi, vi, fin) => ARCH.findIndex(c => c.mi === mi && c.vi === vi && c.fin === fin) + 1;
 const N2 = n => String(n).padStart(2, '0');
 
+/* il frontale disegnato in scala: due lenti (calibro), il ponte, e l'asta quotata sotto */
+const misSvg = m => {
+  if (!m.misure) return '';
+  const {c, p, a} = m.misure, S = 3.6, L = c * S, B = p * S, W = 2 * L + B, x0 = (440 - W) / 2, h = L * .62, y0 = 30;
+  const lente = x => `<rect x="${x}" y="${y0}" width="${L}" height="${h}" rx="${h * .34}" fill="none" stroke="currentColor" stroke-width="1.6"/>`;
+  const quota = (xa, xb, y, n, lab) => `<path d="M${xa} ${y}H${xb}M${xa} ${y - 4}v8M${xb} ${y - 4}v8" stroke="currentColor" stroke-width=".8"/>
+    <text x="${(xa + xb) / 2}" y="${y - 7}" text-anchor="middle">${n}</text><text class="l" x="${(xa + xb) / 2}" y="${y + 13}" text-anchor="middle">${lab}</text>`;
+  const ay = y0 + h + 48;
+  return `<svg class="mis-svg" viewBox="0 0 440 ${ay + 24}" role="img" aria-label="Calibro ${c} mm, ponte ${p} mm, asta ${a} mm">
+    ${lente(x0)}${lente(x0 + L + B)}
+    <path d="M${x0 + L} ${y0 + h * .3}Q${x0 + L + B / 2} ${y0 + h * .12} ${x0 + L + B} ${y0 + h * .3}" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    ${quota(x0, x0 + L, y0 + h + 18, c, 'Calibro')}${quota(x0 + L, x0 + L + B, y0 - 10, p, 'Ponte')}
+    <path d="M${x0} ${ay}H${x0 + W - 18}q10 0 18 10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="${x0 + W / 2}" y="${ay - 7}" text-anchor="middle">${a}</text><text class="l" x="${x0 + W / 2}" y="${ay + 22}" text-anchor="middle">Asta · mm</text>
+  </svg>`;
+};
 const misHtml = m => !m.misure ? '' :
   `<span><b>${m.misure.c}</b><small>calibro</small></span>` +
   `<span><b>${m.misure.p}</b><small>ponte</small></span>` +
@@ -1222,9 +1268,10 @@ function openProduct(m,i,v,fin){
   const mb = document.getElementById('misBlock');
   if(m.misure){
     mb.style.display = '';
-    document.getElementById('ovMis').innerHTML = misHtml(m);
+    document.getElementById('ovMis').innerHTML = misSvg(m);
     document.getElementById('ovMisNote').textContent = misNota(m);
   } else mb.style.display = 'none';
+  cur.shot = 0;
   renderVariant();
   overlay.classList.add('open');
   overlay.scrollTop = 0;
@@ -1239,41 +1286,71 @@ function renderVariant(){
     `N. ${N2(n)} / ${ARCH.length} · “${v.codice}” ${v.colore} · ${lenteDi(m, v, cur.fin)}`;
   document.getElementById('ovPrezzo').textContent = fmt(prezzoDi(m, v, cur.fin));
   document.getElementById('chipsVar').innerHTML = m.varianti.map((x,k)=>
-    `<button class="chip ${k===cur.v?'on':''}" aria-pressed="${k===cur.v}" onclick="setVar(${k})">“${x.codice}” ${x.colore}</button>`).join('');
+    `<button class="chip col ${k===cur.v?'on':''}" aria-pressed="${k===cur.v}" onclick="setVar(${k})"><i style="background:${SWATCH[x.colore] || '#888'}"></i>${x.colore}</button>`).join('');
   const fb = document.getElementById('finBlock');
   if(fins.length>1){
     fb.style.display='block';
     document.getElementById('chipsFin').innerHTML = fins.map(f=>
       `<button class="chip ${f===cur.fin?'on':''}" aria-pressed="${f===cur.fin}" onclick="setFin('${f}')">${f}</button>`).join('');
   } else fb.style.display='none';
-  /* galleria: lo scontorno sulla carta, poi le tre foto, poi il ritratto del booklet */
+  /* galleria: scontorno (si inclina col mouse), ritratto, tre foto. Dissolvenza tra un'immagine e l'altra */
   const folder = v.finiture[cur.fin];
   const pics = [{s:CUT(folder), k:'cut'}, {s:m.ritratto, k:'ritratto'}, ...imgs(folder).map(s => ({s, k:''}))];
   const box = document.getElementById('ovImg');
   box.style.setProperty('--wx', ((m.libro.wm || [20])[0]) + '%');
+  if (box.dataset.m !== m.id){
+    box.dataset.m = m.id;
+    box.innerHTML = `<span class="wm" aria-hidden="true">${m.lettera}</span>
+      <div class="gal"><div class="stage" id="galStage"><span class="ombra"></span>
+        <img class="main" alt=""><img class="main" alt="">
+        <span class="giro" aria-hidden="true">${COARSE ? 'Scorri le immagini' : 'Muovi il mouse per girarlo'}</span></div>
+        <div class="thumbs" id="galThumbs"></div></div>`;
+    galInit(box);
+  }
+  box._pics = pics; box._alt = `${m.nome} — ${v.colore}`; box._nome = m.nome;
   const shot = Math.min(cur.shot || 0, pics.length - 1);
-  box.innerHTML = `
-    <span class="wm" aria-hidden="true">${m.lettera}</span>
-    <div class="gal">
-      <div class="stage"><img class="main ${pics[shot].k}" id="galMain" src="${pics[shot].s}" alt="${m.nome} — ${v.colore}"></div>
-      <div class="thumbs">${pics.map((p,k)=>
-        `<button class="th ${k===shot?'on':''}" data-k="${k}" aria-label="Immagine ${k+1} di ${pics.length}"><img class="${p.k}" loading="lazy" src="${p.s}" alt=""></button>`).join('')}</div>
-    </div>`;
-  box.querySelector('.wm').style.display = pics[shot].k === 'cut' ? '' : 'none';
-  box.querySelectorAll('.th').forEach(b=>{
-    b.onclick = ()=>{
-      const k = +b.dataset.k, p = pics[k], main = document.getElementById('galMain');
-      cur.shot = k;
-      main.src = p.s; main.className = 'main ' + p.k;
-      main.alt = p.k === 'ritratto' ? `${m.nome} indossato` : `${m.nome} — ${v.colore}`;
-      box.querySelector('.wm').style.display = p.k === 'cut' ? '' : 'none';
-      box.querySelectorAll('.th').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');
-    };
-  });
+  box.querySelector('#galThumbs').innerHTML = pics.map((p,k)=>
+    `<button class="th ${k===shot?'on':''}" data-k="${k}" aria-label="Immagine ${k+1} di ${pics.length}"><img class="${p.k}" loading="lazy" src="${p.s}" alt=""></button>`).join('');
+  galShow(box, shot);
   scriviHash();
 }
-function setVar(k){ cur.v = k; cur.fin = null; cur.shot = 0; renderVariant(); }
+function galShow(box, k){
+  const pics = box._pics, p = pics[k], st = box.querySelector('#galStage');
+  const [a, b] = st.querySelectorAll('.main');
+  const vis = a.classList.contains('on') ? a : b, nuovo = vis === a ? b : a;
+  cur.shot = k;
+  if (vis.getAttribute('src') === p.s){ vis.className = 'main on ' + p.k; }
+  else {
+    nuovo.className = 'main ' + p.k; nuovo.src = p.s;
+    nuovo.alt = p.k === 'ritratto' ? `${box._nome} indossato` : box._alt;
+    const via = () => { nuovo.classList.add('on'); vis.classList.remove('on'); vis.alt = ''; };
+    nuovo.decode ? nuovo.decode().then(via, via) : via();
+  }
+  st.classList.toggle('su-cut', p.k === 'cut');
+  box.querySelector('.wm').style.opacity = p.k === 'cut' ? '' : '0';
+  box.querySelectorAll('.th').forEach(x => x.classList.toggle('on', +x.dataset.k === k));
+}
+function galInit(box){
+  const st = box.querySelector('#galStage');
+  box.querySelector('#galThumbs').addEventListener('click', e => { const b = e.target.closest('.th'); if (b) galShow(box, +b.dataset.k); });
+  /* lo scontorno segue il mouse: lo giri come se lo avessi in mano */
+  if (!REDUCE && !COARSE){
+    st.addEventListener('pointermove', e => {
+      const r = st.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      st.style.setProperty('--ry', (x * 26).toFixed(2) + 'deg'); st.style.setProperty('--rx', (-y * 14).toFixed(2) + 'deg');
+    });
+    st.addEventListener('pointerleave', () => { st.style.setProperty('--ry', '0deg'); st.style.setProperty('--rx', '0deg'); });
+  }
+  /* col dito: scorri tra le immagini */
+  let x0 = null;
+  st.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') x0 = e.clientX; });
+  st.addEventListener('pointerup', e => {
+    if (x0 === null) return; const dx = e.clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40){ const n = box._pics.length; galShow(box, (cur.shot + (dx < 0 ? 1 : -1) + n) % n); }
+  });
+  st.addEventListener('pointercancel', () => x0 = null);
+}
+function setVar(k){ cur.v = k; cur.fin = null; renderVariant(); }
 /* ogni pezzo ha un suo indirizzo: #/riri/02/Sole — si puo' linkare da Instagram */
 function scriviHash(){
   const v = cur.m.varianti[cur.v];
@@ -1283,7 +1360,7 @@ function pulisciHash(){
   if(!location.hash.startsWith('#/')) return;
   try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
 }
-function setFin(f){ cur.fin = f; cur.shot = 0; renderVariant(); }
+function setFin(f){ cur.fin = f; renderVariant(); }
 function closeProduct(){ overlay.classList.remove('open'); pulisciHash(); chiudiDialogo(overlay); }
 
 /* ---------- dialoghi accessibili: focus trap, Esc, ritorno del focus ---------- */
@@ -1721,7 +1798,7 @@ const SWATCH = {
     </article>`;
   };
   const ed = `<article class="card ed" aria-label="Una stella sola">
-      <img src="img-cap-congedo.jpg" loading="lazy" decoding="async" alt="Un Joel nero dimenticato su una tavola a fine festa" width="2400" height="1620">
+      <img src="img-cap-congedo.webp" loading="lazy" decoding="async" alt="Un Joel nero dimenticato su una tavola a fine festa" width="2400" height="1620">
       <div class="info"><p>Il resto lo scrive chi le indossa.</p><a href="#storia">Il manifesto</a></div>
     </article>`;
   /* ordine "dal nero alla luce"; Riri occupa due righe a destra, la tessera chiude la terza */
@@ -1790,6 +1867,36 @@ function nastro(track){
 }
 nastro(document.getElementById('cgrid'));
 nastro(document.querySelector('.tre'));
+
+/* ---------- ingresso delle sezioni: titoli, testi, immagini, carte in sequenza ---------- */
+(() => {
+  const set = (sel, cls, step = 0) => document.querySelectorAll(sel).forEach((el, i) => {
+    el.classList.add(cls); if (step) el.style.setProperty('--rd', (i % 4) * step + 'ms');
+  });
+  set('main .titolo-g, section .titolo-g, .indice h2', 'rvt');
+  set('.sez-head p, .vt-head span, .bt-head span, .dove-intro, .manifesto .man, .motto, .handle, .hero-voce, .hero-p, .hero-az, .fiducia', 'rv');
+  set('.cgrid > .card', 'rv', 90);
+  set('.tre .im', 'rvi', 120);
+  set('.tre figcaption', 'rv', 120);
+  set('.neg article', 'rv', 140);
+  set('.manifesto .foto', 'rvi');
+  set('.indice a', 'rv', 60);
+  set('.bt-body', 'rv');
+  /* la hero e' gia' sullo schermo quando la copertina finisce: entra in sequenza */
+  document.querySelectorAll('.hero .rv, .hero .rvt').forEach((el, i) => el.style.setProperty('--rd', 120 + i * 110 + 'ms'));
+  /* un elemento ritagliato del tutto ha area zero: si osserva il suo contenitore */
+  const bersaglio = new Map();
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting || e.boundingClientRect.top < 0){
+      (bersaglio.get(e.target) || []).forEach(el => el.classList.add('in')); io.unobserve(e.target);
+    }
+  }), { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv, .rvt, .rvi').forEach(el => {
+    const k = el.classList.contains('rv') ? el : el.parentElement;
+    if (!bersaglio.has(k)){ bersaglio.set(k, []); io.observe(k); }
+    bersaglio.get(k).push(el);
+  });
+})();
 
 /* ---------- il pulsante di richiesta compare dopo la prima schermata ---------- */
 (() => {
@@ -1930,6 +2037,7 @@ tvGrid.addEventListener('click', e => {
   if (opt) return tvPick(+opt.dataset.k);
   if (e.target.closest('#tvCta') && tvLast) return openProduct(tvLast.m, tvLast.mi, tvLast.vi, tvLast.fin);
   if (e.target.closest('#tvAdd') && tvLast) return aggiungi(tvLast.mi, tvLast.vi, tvLast.fin);
+  if (e.target.closest('#tvBanco') && tvLast && window.bancoSu){ window.bancoSu(tvLast.mi, tvLast.vi, tvLast.fin); document.getElementById('banco').scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth' }); return; }
   if (e.target.closest('#tvAgain')){ tvStep = 0; tvScore = {}; tvCol = 'nero'; tvLast = null; tvRender(); }
 });
 function tvRender(){
@@ -1979,6 +2087,7 @@ function tvResult(){
           <span class="cz-prezzo">${fmt(prezzoDi(best, v, fin))}</span>
           <button class="btn pieno" id="tvCta">Vedi il modello</button>
           <button class="btn filo" id="tvAdd">Aggiungi ${STAR}</button>
+          <button class="btn filo" id="tvBanco">Cambia colore e lente</button>
         </div>
         <button class="tv-again" id="tvAgain">Ricomincia</button>
       </div>
@@ -2108,6 +2217,7 @@ renderCart();
   document.getElementById('btMore').onclick = () => openProduct(MODELLI[S.mi], S.mi, S.vi, S.f);
   buildForme();
   apply(0);
+  window.bancoSu = (mi, vi, f) => { S.mi = mi; apply(0); S.vi = vi; apply(1); S.f = f; apply(2); };
 })();
 
 /* ============================================================
@@ -2116,27 +2226,27 @@ renderCart();
    ============================================================ */
 (() => {
   const VETRINE = [
-    { id:'nero',  lab:'Nero',        jp:'黒', img:'img-models-bene.jpg', op:'50% 26%',
+    { id:'nero',  lab:'Nero',        jp:'黒', img:'img-models-bene.webp', op:'50% 26%',
       alt:'Benè nero indossato',
       nota:'Acetato nero lucido. Il punto di partenza di ogni forma.',
       f:c => /nero/i.test(c.v.colore) },
-    { id:'tarta', lab:'Tartarugato', jp:'斑', img:'img-models-riri.jpg', op:'50% 26%',
+    { id:'tarta', lab:'Tartarugato', jp:'斑', img:'img-models-riri.webp', op:'50% 26%',
       alt:'Riri tartarugato indossato',
       nota:'Acetati screziati, dal tartarugato profondo alla tartaruga chiara.',
       f:c => /tartarug|tartaruga/i.test(c.v.colore) },
-    { id:'sole',  lab:'Sole',        jp:'陽', img:'img-models-alone.jpg', op:'50% 26%',
+    { id:'sole',  lab:'Sole',        jp:'陽', img:'img-models-alone.webp', op:'50% 26%',
       alt:'Alone. da sole indossato',
       nota:'Lenti solari, colori misurati.',
       f:c => lenteDi(c.m, c.v, c.fin) === 'Sole' },
-    { id:'vista', lab:'Vista',       jp:'視', img:'img-models-julian.jpg', op:'50% 26%',
+    { id:'vista', lab:'Vista',       jp:'視', img:'img-models-julian.webp', op:'50% 26%',
       alt:'Julian da vista indossato',
       nota:'Montature da vista, pronte per le lenti del tuo ottico.',
       f:c => lenteDi(c.m, c.v, c.fin) === 'Vista' },
-    { id:'trasp', lab:'Trasparente', jp:'透', img:'img-models-joel.jpg', op:'50% 26%',
+    { id:'trasp', lab:'Trasparente', jp:'透', img:'img-models-joel.webp', op:'50% 26%',
       alt:'Joel cristallo indossato',
       nota:'Cristallo, rosso e marrone trasparente: l’acetato che lascia passare la luce.',
       f:c => /trasparente|cristallo/i.test(c.v.colore) },
-    { id:'archivio', lab:'Archivio', jp:'蔵', img:'img-bw-marmo.jpg', op:'50% 50%',
+    { id:'archivio', lab:'Archivio', jp:'蔵', img:'img-bw-marmo.webp', op:'50% 50%',
       alt:'La stella Koshira scolpita nel marmo',
       nota:'', tutte:true, vaiArchivio:true }
   ];
@@ -2250,44 +2360,44 @@ renderCart();
         { "@type": "ListItem", "position": 1, "item": {
           "@type": "Product", "name": "Benè", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da sole", "material": "Acetato",
-          "description": "Compatto e deciso. Un pezzo unico nel drop: nero, lenti sfumate, da sole.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-22-1.jpg",
+          "description": "Compatto, deciso, senza alternative. Benè esiste in un’unica versione: acetato nero, lenti sfumate, da sole.",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-22-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/bene/01/unica" } },
         { "@type": "ListItem", "position": 2, "item": {
           "@type": "Product", "name": "Alone.", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da sole", "material": "Acetato",
           "description": "Doppio ponte e lenti piene, in nero, tartaruga chiara o marrone trasparente.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-14-1.jpg",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-14-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/alone/01/unica" } },
         { "@type": "ListItem", "position": 3, "item": {
           "@type": "Product", "name": "Robin", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da sole", "material": "Acetato e metallo",
           "description": "Il cerchio solo nella parte alta: sotto, la lente resta libera. Frontale nero, lenti azzurre.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-1-1.jpg",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-1-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/robin/01/unica" } },
         { "@type": "ListItem", "position": 4, "item": {
           "@type": "Product", "name": "Anuar", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da sole", "material": "Acetato", "size": "50▫22 145",
           "description": "Squadrato, frontale spesso, spalle larghe. Nero, tartarugato o verde oliva trasparente.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-20-1.jpg",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-20-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/anuar/01/unica" } },
         { "@type": "ListItem", "position": 5, "item": {
           "@type": "Product", "name": "Riri", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da vista e da sole", "material": "Acetato", "size": "56▫11 145",
           "description": "Doppio ponte e goccia da aviatore. Da vista o da sole in nero e tartarugato, e in acetato rosso trasparente.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-5-1.jpg",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-5-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/riri/03/unica" } },
         { "@type": "ListItem", "position": 6, "item": {
           "@type": "Product", "name": "Julian", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da vista e da sole", "material": "Acetato",
           "description": "Tondo e compatto, il pezzo più versatile dell'archivio. Nero, tartarugato o grigio-blu, da vista o da sole.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-7-1.jpg",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-7-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/julian/01/Vista" } },
         { "@type": "ListItem", "position": 7, "item": {
           "@type": "Product", "name": "Joel", "brand": { "@id": "https://drugobi.github.io/KOSHIRA2/#brand" },
           "category": "Occhiali da vista e da sole", "material": "Acetato",
           "description": "Un rettangolo pulito, senza concessioni. Nero da vista o da sole, oppure cristallo.",
-          "image": "https://drugobi.github.io/KOSHIRA2/img-13-1.jpg",
+          "image": "https://drugobi.github.io/KOSHIRA2/img-13-1.webp",
           "url": "https://drugobi.github.io/KOSHIRA2/#/joel/01/Vista" } }
       ]
     }
