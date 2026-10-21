@@ -148,20 +148,24 @@
 
   /* ---------- copertina: pelle e marchio impresso a secco, luce radente in WebGL ---------- */
   .cover{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#070707 url('img-pelle.jpg') center/cover;display:grid;place-items:center;--lx:50%;--ly:38%}
-  .cover canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.2s ease}
+  .cover canvas{position:absolute;inset:-3%;width:106%;height:106%;display:block;opacity:0;transition:opacity 2.4s ease;will-change:transform}
   .cover.gl canvas{opacity:1}
   .cover.gl .cv-logo,.cover.gl::before{visibility:hidden}
   .cover::before{content:'';position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;
     background:radial-gradient(circle at var(--lx) var(--ly),rgba(255,255,255,.5),rgba(255,255,255,0) 42%)}
-  .cv-logo{position:relative;z-index:1;width:min(360px,58vw);aspect-ratio:182.76/196.44;margin-top:-8svh}
+  .cv-logo{position:relative;z-index:1;width:min(360px,58vw);aspect-ratio:182.76/196.44}
   .cv-logo img{width:100%;height:100%;filter:drop-shadow(0 1px 0 rgba(255,255,255,.13)) drop-shadow(0 -1px 0 rgba(0,0,0,.95))}
-  .cv-sub{position:absolute;left:0;right:0;bottom:clamp(76px,13vh,130px);z-index:2;text-align:center;
-    font-family:var(--voce);font-style:italic;font-size:clamp(15px,1.3vw,19px);color:#9d9d9a;letter-spacing:.01em;opacity:0;animation:cvIn 1.6s ease 2.2s forwards}
-  .cv-scroll{position:absolute;left:50%;bottom:clamp(22px,4vh,38px);transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;
-    font-weight:600;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#8d8d8a;text-decoration:none;opacity:0;animation:cvIn 1.6s ease 2.8s forwards}
-  .cv-scroll svg{width:8px;height:15px;animation:respira 2.6s ease-in-out infinite}
-  @keyframes respira{50%{transform:translateY(4px);opacity:.5}}
+  /* solo un filo di luce che scende: dice "scorri" senza scriverlo */
+  .cv-scroll{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:2;width:44px;height:clamp(70px,11vh,110px);display:block;opacity:0;animation:cvIn 2s ease 3.4s forwards}
+  .cv-scroll::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.16) 40%,rgba(255,255,255,.16))}
+  .cv-scroll::after{content:'';position:absolute;left:50%;top:0;width:1px;height:28%;margin-left:0;
+    background:linear-gradient(180deg,transparent,rgba(255,255,255,.85));animation:goccia 2.4s cubic-bezier(.6,0,.3,1) infinite}
+  @keyframes goccia{0%{transform:translateY(-100%);opacity:0}25%{opacity:1}85%{opacity:1}100%{transform:translateY(360%);opacity:0}}
   @keyframes cvIn{to{opacity:1}}
+  /* la navigazione arriva dopo la copertina */
+  header{transition:opacity .6s ease,transform .6s var(--ease)}
+  header.velato{opacity:0;transform:translateY(-14px);pointer-events:none}
+  header.velato > *{pointer-events:none}
 
   /* ---------- hero: il volto e la forma, subito ---------- */
   .hero{display:grid;grid-template-columns:1fr 1fr;min-height:max(100svh,660px);background:var(--nero)}
@@ -651,7 +655,7 @@
   </defs>
 </svg>
 
-<header>
+<header class="velato">
   <a class="brand" href="#top" aria-label="KOSHIRA, torna all'inizio"><img src="logo-wordmark-white.svg" alt="KOSHIRA" width="298" height="34"></a>
   <nav class="top" aria-label="Sezioni"><a href="#collezione">Collezione</a><a href="#vetrine">Vetrine</a><a href="#archivio">Archivio</a><a href="#trova">Trova la tua forma</a><a href="#dove">Rivenditori</a></nav>
   <div class="hd-dx">
@@ -677,8 +681,7 @@
   <h1 class="sr-only">KOSHIRA — occhiali in acetato fatti a mano in Italia, Drop 01</h1>
   <canvas id="pelle" aria-hidden="true"></canvas>
   <div class="cv-logo"><img src="logo-lockup-black.svg" alt="" width="183" height="196"></div>
-  <p class="cv-sub">Archivio · Drop 01</p>
-  <a class="cv-scroll" href="#apertura">Entra<svg class="s" aria-hidden="true"><use href="#s"/></svg></a>
+  <a class="cv-scroll" href="#apertura" aria-label="Scorri"></a>
 </section>
 
 <section class="hero" id="apertura" aria-labelledby="heroTit">
@@ -1334,7 +1337,7 @@ function toast(msg){
       vec3 n=normalize(vec3((h-hx)*k,(h-hy)*k,1.));
       gl_FragColor=vec4(n.xy*.5+.5,clamp(h*.3+.5,0.,1.),mix(pr*.6,1.,st));}`;
   const FS2 = COMMON + `
-    uniform sampler2D uSurf;uniform vec2 uRes;uniform vec3 uLight;uniform float uInt,uTime,uDpr;
+    uniform sampler2D uSurf;uniform vec2 uRes;uniform vec3 uLight;uniform float uInt,uTime,uDpr;uniform vec3 uStar;
     void main(){vec2 uv=gl_FragCoord.xy/uRes;vec4 s=texture2D(uSurf,uv);
       vec3 n;n.xy=s.xy*2.-1.;n.z=sqrt(max(1.-dot(n.xy,n.xy),0.));
       float h=(s.z-.5)/.3;float st=smoothstep(.8,.97,s.w);float pr=clamp(s.w/.6,0.,1.)*(1.-st);
@@ -1355,7 +1358,16 @@ function toast(msg){
       float spm=pow(max(dot(n,hv),0.),220.)*9.;
       vec3 metal=vec3(.72,.73,.75)*(env*.3+ndl*att*.9)+vec3(1.)*spm*att*.5+vec3(.9)*pow(1.-n.z,3.)*.3;
       col=mix(col,metal,st);
-      col=vec3(1.)-exp(-col*1.9);
+      /* pelle pressata: nero lucido, una velatura ampia e un filo di luce sugli smussi */
+      col+=vec3(.9,.9,.92)*pr*(pow(max(dot(n,hv),0.),9.)*.035*att+pow(1.-n.z,1.4)*.22*att);
+      /* la stella si accende quando la luce le passa vicino: quattro raggi come la sua forma */
+      vec2 dv=(gl_FragCoord.xy-uStar.xy)/uDpr;
+      float near=uInt*pow(smoothstep(.42,.0,length(uLight.xy-uStar.xy)/min(uRes.x,uRes.y)),1.6);
+      float tw=.75+.25*sin(uTime*2.3)*sin(uTime*1.7+1.);
+      float rays=exp(-abs(dv.y)/.7)*exp(-abs(dv.x)/(24.*uStar.z))+exp(-abs(dv.x)/.7)*exp(-abs(dv.y)/(32.*uStar.z));
+      float core=exp(-length(dv)/(5.*uStar.z));
+      col+=vec3(1.,.98,.95)*(rays*.55+core*.35)*near*tw;
+      col=vec3(1.)-exp(-col*2.05);
       col=pow(col,vec3(.4545));
       vec2 q=(uv-.5)*vec2(uRes.x/uRes.y,1.);
       col*=mix(.42,1.,smoothstep(1.15,.25,length(q)));
@@ -1382,10 +1394,10 @@ function toast(msg){
   const logoT = tex();
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,255]));
   const surfT = tex(), fbo = gl.createFramebuffer();
-  let W = 0, Hh = 0, dpr = 1, ready = false;
+  let W = 0, Hh = 0, dpr = 1, ready = false, star = [0, 0, 1];
 
   function bake(){
-    const r = sec.getBoundingClientRect();
+    const r = cv.getBoundingClientRect();
     dpr = Math.min(devicePixelRatio || 1, 2);
     if (r.width * r.height * dpr * dpr > 4.2e6) dpr = Math.sqrt(4.2e6 / (r.width * r.height));
     W = Math.round(r.width * dpr); Hh = Math.round(r.height * dpr);
@@ -1398,9 +1410,10 @@ function toast(msg){
     gl.useProgram(P1);
     /* il marchio: largo come la versione HTML, un po' sopra il centro */
     const lw = Math.min(360, r.width * .58) * dpr, lh = lw * 196.44 / 182.76;
-    const cy = Hh * .5 + .08 * Hh;
+    const cy = Hh * .5;
     gl.uniform2f(U(P1,'uRes'), W, Hh); gl.uniform1f(U(P1,'uDpr'), dpr);
     gl.uniform4f(U(P1,'uRect'), W / 2 - lw / 2, cy - lh / 2, lw, lh);
+    star = [W / 2 + lw * .027, cy + lh / 2 - lh * .0547, lw / (360 * dpr)];   /* centro della stella nel logo vettoriale */
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, logoT); gl.uniform1i(U(P1,'uLogo'), 0);
     draw(P1);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -1409,7 +1422,7 @@ function toast(msg){
 
   /* luce: entra dall'alto a sinistra e trova il marchio; poi segue il puntatore, o gira da sola */
   const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let t0 = performance.now(), last = -1e9, ptr = null, lx = -0.15, ly = 1.15, vis = true, scrollP = 0;
+  let t0 = performance.now(), last = -1e9, ptr = null, lx = -0.2, ly = 1.2, vis = true, scrollP = 0, rx = 0, ry = 0;
   sec.addEventListener('pointermove', e => { const r = sec.getBoundingClientRect(); ptr = [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height]; last = performance.now(); });
   sec.addEventListener('pointerdown', e => { const r = sec.getBoundingClientRect(); ptr = [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height]; last = performance.now(); });
   new IntersectionObserver(e => vis = e[0].isIntersecting).observe(sec);
@@ -1419,21 +1432,24 @@ function toast(msg){
     requestAnimationFrame(frame);
     if (!ready || !vis || document.hidden) return;
     const t = (now - t0) / 1000;
-    const intro = Math.min(1, Math.max(0, (t - .15) / 2.4)), e = 1 - Math.pow(1 - intro, 3);
+    const intro = Math.min(1, Math.max(0, (t - .3) / 3.6)), e = 1 - Math.pow(1 - intro, 3);
     let tx, ty;
     if (ptr && now - last < 2600){ tx = ptr[0]; ty = ptr[1]; }
     else { tx = .5 + Math.cos(t * .32) * .3; ty = .6 + Math.sin(t * .47) * .2; }
-    if (intro < 1){ tx = -.15 + (.68 - -.15) * e; ty = 1.15 + (.7 - 1.15) * e; }
+    if (intro < 1){ tx = -.2 + (.66 - -.2) * e; ty = 1.2 + (.66 - 1.2) * e; }
     const k = ptr && now - last < 2600 ? .09 : .025;
     lx += (tx - lx) * (intro < 1 ? 1 : k); ly += (ty - ly) * (intro < 1 ? 1 : k);
-    const z = (.38 - .2 * scrollP) * Math.min(W, Hh);
+    const z = ((.38 - .2 * scrollP) + .5 * (1 - e)) * Math.min(W, Hh);
+    rx += ((ly - .5) * 2.2 - rx) * .06; ry += ((lx - .5) * -2.8 - ry) * .06;
+    if (!REDUCE) cv.style.transform = `perspective(1400px) rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg) scale(${(1 + .05 * scrollP).toFixed(4)})`;
     gl.viewport(0, 0, W, Hh);
     gl.useProgram(P2);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, surfT); gl.uniform1i(U(P2,'uSurf'), 0);
     gl.uniform2f(U(P2,'uRes'), W, Hh); gl.uniform1f(U(P2,'uDpr'), dpr);
     gl.uniform3f(U(P2,'uLight'), lx * W, ly * Hh, z);
-    gl.uniform1f(U(P2,'uInt'), (.15 + .85 * e) * (1 - .35 * scrollP));
+    gl.uniform1f(U(P2,'uInt'), e * (1 - .45 * scrollP));
     gl.uniform1f(U(P2,'uTime'), t);
+    gl.uniform3f(U(P2,'uStar'), star[0], star[1], star[2]);
     draw(P2);
     if (REDUCE && intro >= 1) ready = false;   /* movimento ridotto: un solo fotogramma fermo */
   }
@@ -1453,6 +1469,13 @@ function toast(msg){
   addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
     const r = sec.getBoundingClientRect(), k = Math.round(r.width) + 'x' + Math.round(r.height);
     if (k === lastSize) return; lastSize = k; bake(); if (REDUCE) ready = true; }, 160); });
+})();
+
+/* la navigazione compare quando la copertina e' quasi passata (e subito, se si arriva da un link interno) */
+(() => {
+  const hd = document.querySelector('header');
+  const upd = () => hd.classList.toggle('velato', scrollY < innerHeight * .55 && !document.querySelector('.overlay.open'));
+  addEventListener('scroll', upd, { passive: true }); addEventListener('load', upd); setTimeout(upd, 50);
 })();
 
 /* ============================================================
