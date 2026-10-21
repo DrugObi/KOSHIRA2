@@ -167,6 +167,12 @@
   header.velato{opacity:0;transform:translateY(-14px);pointer-events:none}
   header.velato > *{pointer-events:none}
 
+  .strip{background:var(--nero);color:var(--grigio-n);overflow:hidden;white-space:nowrap;border-top:1px solid var(--linea-n);border-bottom:1px solid var(--linea-n)}
+  .strip .inner{display:inline-block;padding:13px 0;font-weight:700;font-size:9.5px;letter-spacing:.42em;text-transform:uppercase;animation:slide 40s linear infinite}
+  @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .cz-az{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:clamp(22px,4vh,32px)}
+  .cz-prezzo{font-weight:700;font-size:18px;letter-spacing:-.01em;margin-right:8px}
+
   /* ---------- hero: il volto e la forma, subito ---------- */
   .hero{display:grid;grid-template-columns:1fr 1fr;min-height:max(100svh,660px);background:var(--nero)}
   .hero-txt{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(110px,15vh,150px) 8% clamp(60px,9vh,96px)}
@@ -312,16 +318,16 @@
   .dots button[aria-pressed="true"]{box-shadow:0 0 0 1px var(--ink)}
   .card-hit{position:absolute;inset:0;z-index:2}
   .card .star{position:absolute;top:clamp(14px,1.4vw,20px);left:clamp(14px,1.4vw,22px);width:7px;height:13px;z-index:2;color:var(--ink);transition:transform .5s var(--ease)}
-  @media(hover:hover){
-    .card:hover .worn{opacity:1;transform:scale(1)}
-    .card:hover .cut,.card:hover .lett{opacity:0}
-    .card:hover .cut{transform:translateY(-8px)}
-    .card:hover .info{color:#fff}
-    .card:hover .pr{color:rgba(255,255,255,.8)}
-    .card:hover::after{opacity:1}
-    .card:hover .star{color:#fff;transform:scale(1.4)}
-    .card:hover .dots button[aria-pressed="true"]{box-shadow:0 0 0 1px #fff}
-  }
+  .card.vedi:not(.scelta) .worn{opacity:1;transform:scale(1)}
+  .card.vedi:not(.scelta) .cut,.card.vedi:not(.scelta) .lett{opacity:0}
+  .card.vedi:not(.scelta) .cut{transform:translateY(-8px)}
+  .card.vedi:not(.scelta) .info{color:#fff}
+  .card.vedi:not(.scelta) .pr{color:rgba(255,255,255,.8)}
+  .card.vedi:not(.scelta)::after{opacity:1}
+  .card.vedi:not(.scelta) .star{color:#fff;transform:scale(1.4)}
+  .card.vedi:not(.scelta) .dots button[aria-pressed="true"]{box-shadow:0 0 0 1px #fff}
+  .card.scelta .cut img{animation:posa .5s var(--ease)}
+  @keyframes posa{from{transform:translateY(10px) scale(.97);opacity:.4}to{transform:none;opacity:1}}
   .card::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .5s ease;
     background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.62) 100%)}
   /* Riri: la carta rossa, l'unico colore */
@@ -689,7 +695,7 @@
     <span class="wm" aria-hidden="true">K</span>
     <h2 class="titolo-g" id="heroTit">Koshira</h2>
     <p class="hero-voce">Precisione giapponese.<br>Linguaggio della strada.</p>
-    <p class="hero-p">Sette forme in acetato, fatte a mano in Italia. Una stella sola, in metallo, sulla cerniera. Da vista e da sole, da € 350.</p>
+    <p class="hero-p">Sette forme in acetato, fatte a mano in Italia. Una stella sola, in metallo, sulla cerniera. Da vista e da sole.</p>
     <div class="hero-az">
       <a class="btn pieno" href="#collezione">Scopri la collezione</a>
       <a class="btn filo" href="#trova">Trova la tua forma</a>
@@ -1053,6 +1059,8 @@ const LISTINO = { Vista: 350, Sole: 390 };
 const lenteDi  = (m, v, fin) => fin !== 'unica' ? fin : (v.lente ?? m.lente);
 const prezzoDi = (m, v, fin) => m.prezzo ?? LISTINO[lenteDi(m, v, fin)];
 const prezziDi = m => m.varianti.flatMap(v => Object.keys(v.finiture).map(f => prezzoDi(m, v, f)));
+const lentiDi = m => { const s = new Set(m.varianti.flatMap(v => Object.keys(v.finiture).map(f => lenteDi(m, v, f))));
+  return s.size > 1 ? 'vista e sole' : 'da ' + [...s][0].toLowerCase(); };
 const prezzoDa = m => {
   const p = prezziDi(m);
   const min = Math.min(...p), max = Math.max(...p);
@@ -1495,7 +1503,7 @@ function toast(msg){
     const m = MODELLI[ord[k]], I = m.indossa, v = m.varianti[I.vi];
     pics.forEach((p, j) => p.classList.toggle('on', j === k));
     nm.textContent = m.nome;
-    dt.textContent = `“${v.codice}” ${v.colore} · ${lenteDi(m, v, I.fin)} · ${fmt(prezzoDi(m, v, I.fin))}`;
+    dt.textContent = `“${v.codice}” ${v.colore} · ${lenteDi(m, v, I.fin)}`;
     tick.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', +b.dataset.k === k));
   }
   const play = () => { clearInterval(t); if (!REDUCE) t = setInterval(() => show(k + 1), 4200); };
@@ -1526,7 +1534,7 @@ const SWATCH = {
       <span class="cut"><img src="${CUT(v.finiture[L.fin])}" loading="lazy" decoding="async" alt="${m.nome} “${v.codice}” ${v.colore}"></span>
       <button class="card-hit" aria-label="Apri ${m.nome}"></button>
       <div class="info">
-        <div><span class="nm">${m.nome}</span><span class="pr">${prezzoDa(m)} · ${nv} ${nv > 1 ? 'varianti' : 'variante'}</span>
+        <div><span class="nm">${m.nome}</span><span class="pr">${nv} ${nv > 1 ? 'varianti' : 'variante'} · ${lentiDi(m)}</span>
           ${big ? `<span class="claim">${L.claim}</span>` : ''}</div>
         ${m.varianti.length > 1 ? `<div class="dots" role="group" aria-label="Colori di ${m.nome}">${m.varianti.map((x, k) =>
           `<button data-vi="${k}" aria-pressed="${k === L.vi}" aria-label="${x.colore}" title="${x.colore}"><i style="background:${SWATCH[x.colore] || '#888'}"></i></button>`).join('')}</div>` : ''}
@@ -1540,6 +1548,15 @@ const SWATCH = {
   /* ordine "dal nero alla luce"; Riri occupa due righe a destra, la tessera chiude la terza */
   const html = MODELLI.map(card);
   grid.innerHTML = [html[0], html[1], html[4], html[2], html[3], html[5], html[6], ed].join('');
+  /* il ritratto compare passando sull'immagine, non sulla riga dei colori */
+  grid.addEventListener('pointerover', e => {
+    if (e.pointerType !== 'mouse') return;
+    const c = e.target.closest('.card[data-mi]'); if (!c) return;
+    c.classList.toggle('vedi', !e.target.closest('.info'));
+  });
+  grid.addEventListener('pointerout', e => {
+    const c = e.target.closest('.card[data-mi]'); if (c && !c.contains(e.relatedTarget)) c.classList.remove('vedi', 'scelta');
+  });
   grid.addEventListener('click', e => {
     const c = e.target.closest('.card[data-mi]'); if (!c) return;
     const mi = +c.dataset.mi, m = MODELLI[mi];
@@ -1548,6 +1565,7 @@ const SWATCH = {
       const vi = +dot.dataset.vi, v = m.varianti[vi], fin = Object.keys(v.finiture)[0];
       c.dataset.vi = vi; c.dataset.fin = fin;
       c.querySelectorAll('.dots button').forEach(b => b.setAttribute('aria-pressed', b === dot));
+      c.classList.remove('scelta'); void c.offsetWidth; c.classList.add('scelta');
       const im = c.querySelector('.cut img');
       im.style.opacity = 0;
       setTimeout(() => { im.src = CUT(v.finiture[fin]); im.alt = `${m.nome} “${v.codice}” ${v.colore}`; im.style.opacity = ''; }, REDUCE ? 0 : 160);
@@ -1641,7 +1659,7 @@ function archFrame(){
     clearTimeout(archSwap);
     archSwap = setTimeout(() => {
       archNmEl.textContent = a.m.nome;
-      archDetEl.textContent = `“${a.v.codice}” ${a.v.colore} · ${lenteDi(a.m, a.v, a.fin)} · ${fmt(prezzoDi(a.m, a.v, a.fin))}`;
+      archDetEl.textContent = `“${a.v.codice}” ${a.v.colore} · ${lenteDi(a.m, a.v, a.fin)}`;
       archDetEl.classList.remove('out'); archNmEl.classList.remove('out');
     }, 170);
   }
@@ -1691,6 +1709,7 @@ function tvSwap(html, focusSel){
   }, REDUCE ? 0 : 220);
 }
 tvGrid.addEventListener('click', e => {
+  if (tvGrid.classList.contains('fade')) return;   /* niente doppio clic durante il cambio di domanda */
   const opt = e.target.closest('.tv-opt');
   if (opt) return tvPick(+opt.dataset.k);
   if (e.target.closest('#tvCta') && tvLast) return openProduct(tvLast.m, tvLast.mi, tvLast.vi, tvLast.fin);
@@ -1779,37 +1798,32 @@ renderCart();
   let PICS = [];
   const isCut = s => s.includes('img-cut-');
 
+  /* materializzazione: una sola transizione alla volta. Ogni nuovo clic annulla quella in corso,
+     cosi' due immagini non restano mai una sopra l'altra e la classe (scontorno o foto) segue sempre l'immagine */
+  let giro = 0;
   function paint(src, alt){
     const k = isCut(src) ? 'bt-lay cut' : 'bt-lay';
-    if(A.src && A.src.endsWith(src) && !paint._force) { A.alt = alt; return; }
-    paint._force = false;
-    if(REDUCE){ A.src = src; A.className = k; A.alt = alt; return; }
-    const pre = new Image();
-    pre.onerror = () => { A.src = src; A.className = k; A.alt = alt; };
-    pre.onload = () => {
-      B.src = src; B.className = k;
+    const mio = ++giro;               /* annulla qualunque transizione ancora in volo */
+    clearTimeout(paint._t);
+    if (A.getAttribute('src') === src){ A.alt = alt; A.className = k; B.style.transition = 'none'; B.style.opacity = '0'; sweep.style.opacity = '0'; return; }
+    const fine = () => { if (mio !== giro) return; A.className = k; A.src = src; A.alt = alt;
+      const via = () => { if (mio !== giro) return; B.style.transition = 'none'; B.style.opacity = '0'; };
+      A.decode ? A.decode().then(via, via) : via(); };
+    if (REDUCE){ fine(); return; }
+    const pre = new Image(); pre.src = src;
+    (pre.decode ? pre.decode() : Promise.resolve()).catch(() => {}).then(() => {
+      if (mio !== giro) return;
       B.style.transition = 'none';
-      B.style.clipPath = 'inset(0 0 100% 0)';
-      B.style.transform = 'scale(1.06)';
-      B.style.opacity = '1';
+      B.className = k; B.src = src;
+      B.style.clipPath = 'inset(0 0 100% 0)'; B.style.transform = 'scale(1.04)'; B.style.opacity = '1';
       sweep.style.transition = 'none'; sweep.style.top = '0%'; sweep.style.opacity = '0';
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        B.style.transition = 'clip-path .62s cubic-bezier(.22,.7,.12,1), transform .95s cubic-bezier(.22,.7,.12,1)';
-        B.style.clipPath = 'inset(0 0 0% 0)';
-        B.style.transform = 'scale(1)';
-        sweep.style.transition = 'top .62s cubic-bezier(.22,.7,.12,1)';
-        sweep.style.opacity = '1'; sweep.style.top = '100%';
-        star.classList.remove('go'); void star.getBoundingClientRect(); star.classList.add('go');
-        clearTimeout(paint._t);
-        paint._t = setTimeout(() => {
-          sweep.style.transition = 'opacity .25s ease'; sweep.style.opacity = '0';
-          A.alt = alt; A.src = src; A.className = k;
-          const hide = () => { B.style.opacity = '0'; };
-          A.decode ? A.decode().then(hide).catch(hide) : hide();
-        }, 660);
-      }));
-    };
-    pre.src = src;
+      void B.getBoundingClientRect();
+      B.style.transition = 'clip-path .6s cubic-bezier(.22,.7,.12,1), transform .9s cubic-bezier(.22,.7,.12,1)';
+      B.style.clipPath = 'inset(0 0 0 0)'; B.style.transform = 'scale(1)';
+      sweep.style.transition = 'top .6s cubic-bezier(.22,.7,.12,1)'; sweep.style.opacity = '1'; sweep.style.top = '100%';
+      star.classList.remove('go'); void star.getBoundingClientRect(); star.classList.add('go');
+      paint._t = setTimeout(() => { sweep.style.transition = 'opacity .25s ease'; sweep.style.opacity = '0'; fine(); }, 640);
+    });
   }
   function buildForme(){
     formeEl.innerHTML = MODELLI.map((x, k) => {
@@ -1872,7 +1886,7 @@ renderCart();
   viewEl.addEventListener('click', e => {
     const b = e.target.closest('[data-shot]'); if(!b) return;
     const k = +b.dataset.shot; if(k === S.shot) return;
-    S.shot = k; sync(); paint._force = true; paint(PICS[k], A.alt);
+    S.shot = k; sync(); paint(PICS[k], A.alt);
   });
   document.getElementById('btAdd').onclick = () => aggiungi(S.mi, S.vi, S.f);
   document.getElementById('btMore').onclick = () => openProduct(MODELLI[S.mi], S.mi, S.vi, S.f);
@@ -1940,7 +1954,6 @@ renderCart();
         <span class="ph"><img loading="lazy" decoding="async" src="${CUT(c.folder)}" alt=""></span>
         <span class="nm">${c.m.nome}</span>
         <span class="dt">N. ${N2(ARCH.indexOf(c) + 1)} · “${c.v.codice}” ${c.v.colore} · ${lenteDi(c.m, c.v, c.fin)}</span>
-        <span class="pr">${fmt(prezzoDi(c.m, c.v, c.fin))}</span>
       </button>`).join('') || '<p class="vs-empty">Nessun pezzo in questa vetrina.</p>';
     vsGrid.querySelectorAll('.vs-card').forEach(b => b.onclick = () => {
       const c = v.lista[+b.dataset.k];
