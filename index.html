@@ -178,6 +178,7 @@
   .hero{display:grid;grid-template-columns:1fr 1fr;min-height:max(100svh,660px);background:var(--nero)}
   .hero-txt{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(110px,15vh,150px) 8% clamp(60px,9vh,96px)}
   .hero-txt > :not(.wm,.vk){position:relative;z-index:1}
+  .hero-txt .vk{top:clamp(124px,15%,160px)}  /* sotto il menu, non dietro le voci */
   .hero-txt .wm{left:34%;top:-4%;font-size:118cqw}
   .hero h2{font-family:var(--gotico);font-weight:700;font-size:clamp(78px,10.5vw,176px);line-height:.86;letter-spacing:-.005em;margin-left:-.04em}
   .hero-voce{font-family:var(--voce);font-style:italic;font-size:clamp(22px,2vw,31px);line-height:1.2;margin-top:clamp(18px,3vh,30px)}
@@ -195,16 +196,16 @@
   .hf-slide img{position:absolute;top:-2%;left:-6%;width:112%;height:104%;max-width:none;object-fit:cover;object-position:50% 22%;
     transform:translateX(var(--px,0px)) scale(var(--sc,1.02));-webkit-user-drag:none;user-select:none;pointer-events:none;transition:transform .9s cubic-bezier(.16,1,.3,1)}
   .hero-foto.drag .hf-slide img{transition:none}
-  .hf-cur{position:absolute;left:0;top:0;z-index:4;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;pointer-events:none;
-    display:grid;place-items:center;background:rgba(248,248,247,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--ink);
-    font-weight:700;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translate(var(--cx,0),var(--cy,0));
-    transition:opacity .3s ease,width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease)}
-  .hf-cur span{display:flex;align-items:center;gap:7px}
-  .hf-cur i{font-style:normal;font-size:12px;letter-spacing:0;transition:transform .35s var(--ease)}
+  /* cursore: un anello sottile con due frecce, in negativo sulla foto (sempre leggibile, mai una pastiglia sopra il volto) */
+  .hf-cur{position:absolute;left:0;top:0;z-index:4;width:46px;height:46px;margin:-23px 0 0 -23px;pointer-events:none;color:#fff;mix-blend-mode:difference;
+    opacity:0;transform:translate(var(--cx,0),var(--cy,0));transition:opacity .3s ease}
+  .hf-cur svg{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+  .hf-cur .an{transform-origin:23px 23px;transition:transform .4s var(--ease)}
+  .hf-cur .fs,.hf-cur .fd{transition:transform .4s var(--ease)}
   .hero-foto.over .hf-cur{opacity:1}
-  .hero-foto.drag .hf-cur{width:74px;height:74px;margin:-37px 0 0 -37px}
-  .hero-foto.drag .hf-cur i:first-child{transform:translateX(-4px)}
-  .hero-foto.drag .hf-cur i:last-child{transform:translateX(4px)}
+  .hero-foto.drag .hf-cur .an{transform:scale(.7)}
+  .hero-foto.drag .hf-cur .fs{transform:translateX(-5px)}
+  .hero-foto.drag .hf-cur .fd{transform:translateX(5px)}
   .hero-foto .hero-cap,.hero-foto .hero-tick{cursor:pointer}
   @media(pointer:coarse){ .hero-foto{cursor:auto} .hf-cur{display:none} }
   .hero-cap{position:absolute;left:clamp(14px,2vw,28px);bottom:clamp(14px,2.6vh,28px);z-index:2;display:flex;align-items:center;gap:14px;
@@ -221,7 +222,7 @@
   .hero-tick button[aria-current="true"]::after{animation:riempi var(--dur,4.6s) linear forwards}
   .hero-foto.over .hero-tick button[aria-current="true"]::after,.hero-foto.drag .hero-tick button[aria-current="true"]::after{animation-play-state:paused}
   @keyframes riempi{to{width:100%}}
-  .hero-foto .orn-l{position:absolute;top:clamp(76px,10%,104px);left:clamp(20px,3vw,46px);width:clamp(12px,1.1vw,18px);color:var(--ink);z-index:2}
+  .hero-foto .orn-l{position:absolute;top:clamp(124px,15%,160px);left:clamp(20px,3vw,46px);width:clamp(12px,1.1vw,18px);color:var(--ink);z-index:2}
   @media(max-width:860px){
     .hero{grid-template-columns:1fr;min-height:0}
     .hero-foto{order:-1;height:min(125vw,66svh)}
@@ -257,29 +258,39 @@
   .vt-head h2{font-size:clamp(46px,5.4vw,82px)}
   .vt-head span{font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grigio-n);white-space:nowrap;padding-bottom:6px}
   .vt-row{display:flex;gap:1px;background:var(--linea-n);height:clamp(460px,78svh,860px)}
-  .vt-cell{position:relative;flex:1 1 0;min-width:0;overflow:hidden;background:#000;color:inherit;padding:0;border:0;text-align:center;cursor:pointer;
-    clip-path:inset(100% 0 0 0);
+  /* fluidita': durante l'apertura cambia solo la larghezza delle celle. Foto, titolo e luce non si ridisegnano:
+     la foto ha gia' la misura da aperta e viene solo scoperta, il titolo e' disegnato grande e rimpicciolito,
+     la luce e' un velo nero che cambia opacita'. */
+  .vt-cell{position:relative;flex:1 1 0;min-width:0;overflow:hidden;background:none;color:inherit;padding:0;border:0;text-align:center;cursor:pointer;
+    contain:layout paint style;clip-path:inset(100% 0 0 0);
     transition:flex-grow .75s var(--ease), clip-path 1.05s var(--ease) var(--d,0ms)}
   .vetrine.in .vt-cell{clip-path:inset(0 0 0 0)}
-  .vt-cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 30%);
-    filter:brightness(.62) contrast(1.04);transform:scale(1.07);
-    transition:filter .75s ease, transform .95s var(--ease)}
-  .vt-cell.colore img{filter:grayscale(.1) brightness(.55) contrast(1.05)}
-  .vt-cell::after{content:'';position:absolute;inset:0;pointer-events:none;
+  .vetrine.aperte .vt-cell{clip-path:none}
+  .vt-cell img{position:absolute;top:0;left:50%;height:100%;width:max(100%,36vw);object-fit:cover;object-position:var(--op,50% 30%);
+    background:#000;transform:translateX(-50%) scale(1.07);transition:transform .95s var(--ease);backface-visibility:hidden}
+  .vt-buio{position:absolute;top:0;bottom:0;left:50%;width:max(100%,36vw);transform:translateX(-50%);will-change:opacity;background:#000;opacity:.4;pointer-events:none;transition:opacity .75s var(--ease)}
+  .vt-cell.colore .vt-buio{opacity:.46}
+  .vt-cell::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:max(100%,36vw);transform:translateX(-50%);pointer-events:none;will-change:transform;
     background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,.2) 55%,rgba(0,0,0,.75) 100%)}
-  .vt-in{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22% 8px 0}
+  .vt-in{position:absolute;top:0;bottom:0;left:50%;width:max(100%,36vw);transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22% 8px 0}
   .vt-jp{position:absolute;top:18px;left:50%;transform:translateX(-50%);writing-mode:vertical-rl;font-family:var(--jp);font-size:15px;letter-spacing:.4em;color:rgba(255,255,255,.62)}
-  .vt-lab{font-family:var(--gotico);font-weight:700;font-size:clamp(22px,2.1vw,32px);line-height:1;white-space:nowrap;
-    text-shadow:0 2px 24px rgba(0,0,0,.7);transition:font-size .75s var(--ease)}
-  .vt-in svg.s{width:8px;height:15px;margin-top:16px;opacity:.85;transition:transform .75s var(--ease)}
-  .vt-cta{margin-top:14px;font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);opacity:0;transform:translateY(9px);transition:opacity .5s ease,transform .5s ease}
+  .vt-lab{font-family:var(--gotico);font-weight:700;font-size:clamp(34px,3.4vw,54px);line-height:1;white-space:nowrap;
+    text-shadow:0 2px 24px rgba(0,0,0,.7);transform:scale(.62);transition:transform .75s var(--ease)}
+  /* il titolo rimpicciolito lascia aria sopra e sotto: stella e invito risalgono della stessa misura */
+  .vt-in{--rientro:clamp(6px,.65vw,10px)}
+  .vt-in svg.s{width:8px;height:15px;margin-top:16px;opacity:.85;transform:translateY(calc(-1 * var(--rientro)));transition:transform .75s var(--ease)}
+  .vt-cta{margin-top:14px;font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);opacity:0;
+    transform:translateY(calc(9px - var(--rientro)));transition:opacity .5s ease,transform .5s ease}
   .vt-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px clamp(16px,2.4vw,34px) clamp(60px,9vh,96px);font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grigio-n)}
   @media(hover:hover) and (min-width:981px){
     .vt-row:hover .vt-cell{flex-grow:.86}
     .vt-row:hover .vt-cell:hover,.vt-row:hover .vt-cell:focus-visible,.vt-cell:focus-visible{flex-grow:2.3}
-    .vt-cell:hover img,.vt-cell:focus-visible img{filter:brightness(.92);transform:scale(1)}
-    .vt-cell.colore:hover img,.vt-cell.colore:focus-visible img{filter:none}
-    .vt-cell:hover .vt-lab,.vt-cell:focus-visible .vt-lab{font-size:clamp(34px,3.4vw,54px)}
+    .vt-cell img,.vt-in,.vt-lab,.vt-in svg.s{will-change:transform}
+    .vt-cta{will-change:transform,opacity}
+    .vt-cell:hover img,.vt-cell:focus-visible img{transform:translateX(-50%) scale(1)}
+    .vt-cell:hover .vt-buio,.vt-cell:focus-visible .vt-buio{opacity:.08}
+    .vt-cell.colore:hover .vt-buio,.vt-cell.colore:focus-visible .vt-buio{opacity:0}
+    .vt-cell:hover .vt-lab,.vt-cell:focus-visible .vt-lab{transform:none}
     .vt-cell:hover svg.s,.vt-cell:focus-visible svg.s{transform:scale(1.5)}
     .vt-cell:hover .vt-cta,.vt-cell:focus-visible .vt-cta{opacity:1;transform:none}
   }
@@ -287,9 +298,11 @@
     .vt-row{height:clamp(420px,64svh,640px);overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .vt-row::-webkit-scrollbar{display:none}
     .vt-cell{flex:0 0 68%;scroll-snap-align:center}
-    .vt-lab{font-size:clamp(30px,8vw,42px)}
-    .vt-cell img{filter:brightness(.72);transform:scale(1)}
-    .vt-cell.colore img{filter:grayscale(.1) brightness(.7)}
+    .vt-lab{font-size:clamp(30px,8vw,42px);transform:none}
+    .vt-in{--rientro:0px}
+    .vt-cell img,.vt-in,.vt-buio,.vt-cell::after{left:0;width:100%;transform:none}
+    .vt-buio{opacity:.28}
+    .vt-cell.colore .vt-buio{opacity:.3}
     .vt-cta{opacity:1;transform:none}
   }
   @media(max-width:620px){
@@ -327,7 +340,13 @@
   .card{position:relative;isolation:isolate;overflow:hidden;background:var(--carta-luce);aspect-ratio:4/5;display:flex;flex-direction:column;
     box-shadow:0 1px 0 rgba(0,0,0,.03),0 18px 40px -30px rgba(0,0,0,.35)}
   .card .cut{position:absolute;left:9%;right:9%;top:16%;height:46%;display:grid;place-items:center;z-index:1;transition:opacity .45s ease,transform .8s var(--ease)}
-  .card .cut img{width:100%;height:auto;filter:drop-shadow(0 14px 16px rgba(0,0,0,.14))}
+  /* cambio colore: ogni variante e' uno strato; il nuovo entra con una passata di luce sopra il vecchio */
+  .card .cut .pila{display:grid;place-items:center;width:100%;filter:drop-shadow(0 14px 16px rgba(0,0,0,.14))}
+  .card .cut .ly{grid-area:1/1;position:relative;display:block;width:100%;will-change:clip-path,transform}
+  .card .cut .ly img{display:block;width:100%;height:auto}
+  .card .cut .lampo{position:absolute;inset:0;pointer-events:none;opacity:0;
+    -webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat;
+    background:linear-gradient(104deg,transparent 43%,rgba(255,255,255,.16) 47%,rgba(255,255,255,.78) 50%,rgba(255,255,255,.16) 53%,transparent 57%) 80% 0/300% 100% no-repeat}
   .card .worn{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 24%;z-index:0;opacity:0;transform:scale(1.04);
     transition:opacity .55s ease,transform 1.2s var(--ease)}
   .card .lett{position:absolute;right:-6%;top:-10%;font-family:var(--fraktur);font-size:clamp(150px,17vw,280px);line-height:.8;color:#fff;opacity:.9;z-index:0;pointer-events:none;transition:opacity .4s}
@@ -337,7 +356,13 @@
   .dots{display:flex;gap:6px;position:relative;z-index:3}
   .dots button{width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
   .dots button i{display:block;width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
-  .dots button[aria-pressed="true"]{box-shadow:0 0 0 1px var(--ink)}
+  .dots button i{transform:scale(.82);transition:transform .45s var(--ease)}
+  .dots button[aria-pressed="true"] i{transform:none}
+  .dots button:active i{transform:scale(.7);transition-duration:.12s}
+  @media(hover:hover) and (pointer:fine){ .dots button:hover i{transform:none} }
+  .dots .anello{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;box-shadow:0 0 0 1px var(--ink);
+    transform:translateX(var(--x,0px));transition:transform .55s var(--ease),box-shadow .4s ease}
+  .dots.subito .anello{transition:none}
   .card-hit{position:absolute;inset:0;z-index:2}
   .card .star{position:absolute;top:clamp(14px,1.4vw,20px);left:clamp(14px,1.4vw,22px);width:7px;height:13px;z-index:2;color:var(--ink);transition:transform .5s var(--ease)}
   .card.vedi:not(.scelta) .worn{opacity:1;transform:scale(1)}
@@ -347,9 +372,7 @@
   .card.vedi:not(.scelta) .pr{color:rgba(255,255,255,.8)}
   .card.vedi:not(.scelta)::after{opacity:1}
   .card.vedi:not(.scelta) .star{color:#fff;transform:scale(1.4)}
-  .card.vedi:not(.scelta) .dots button[aria-pressed="true"]{box-shadow:0 0 0 1px #fff}
-  .card.scelta .cut img{animation:posa .5s var(--ease)}
-  @keyframes posa{from{transform:translateY(10px) scale(.97);opacity:.4}to{transform:none;opacity:1}}
+  .card.vedi:not(.scelta) .dots .anello{box-shadow:0 0 0 1px #fff}
   .card::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .5s ease;
     background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.62) 100%)}
   /* Riri: la carta rossa, l'unico colore */
@@ -360,7 +383,7 @@
   .card.big .pr{color:var(--rosso-testo)}
   .card.big .claim{display:block;font-family:var(--voce);font-style:italic;font-size:clamp(18px,1.6vw,24px);margin-top:10px;max-width:24ch;line-height:1.2}
   .card.big .star{color:#fff}
-  .card.big .dots button[aria-pressed="true"]{box-shadow:0 0 0 1px #fff}
+  .card.big .dots .anello{box-shadow:0 0 0 1px #fff}
   .card.big .worn{object-position:50% 30%}
   /* tessera editoriale: una foto, una frase */
   .card.ed{grid-column:3/5;aspect-ratio:auto;background:#000;color:#fff;cursor:default}
@@ -390,6 +413,14 @@
   .tre p{margin-top:12px;font-size:15px;line-height:1.55;color:#cfcfcc;max-width:38ch}
   @media(max-width:860px){ .tre{grid-template-columns:1fr;gap:44px} .tre .im{aspect-ratio:4/4.6} }
 
+  /* ---------- passaggio fra le sezioni: un sipario nero con la stella e il nome della sezione ---------- */
+  .passo{position:fixed;inset:0;z-index:95;background:var(--nero);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+    clip-path:inset(100% 0 0 0);visibility:hidden;pointer-events:none}
+  .passo.su{visibility:visible;pointer-events:auto}
+  .passo svg{width:clamp(14px,1.3vw,20px);height:clamp(26px,2.4vw,37px)}
+  .passo b{font-family:var(--gotico);font-weight:700;font-size:clamp(42px,6vw,92px);line-height:1;letter-spacing:-.005em;text-align:center;padding:0 20px}
+  .passo .riga{display:flex;flex-direction:column;align-items:center;gap:22px;will-change:transform,opacity}
+
   /* ---------- trova la tua forma: una pagina d'indice ---------- */
   .trova{position:relative;overflow:hidden;container-type:inline-size}
   .trova .wm{font-size:min(70cqw,1100px);left:56%;top:-6%}
@@ -415,6 +446,18 @@
   .tv-res{grid-column:1/13;display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(20px,3vw,44px);align-items:center}
   .tv-res .im{grid-column:1/7;position:relative;display:grid;place-items:center;aspect-ratio:1.5/1}
   .tv-res .im img{width:92%;filter:drop-shadow(0 18px 22px rgba(0,0,0,.14))}
+  /* lo show: la ruota delle forme, poi la tua. Tutto e' gia' al suo posto: cambia solo cosa si vede */
+  .tv-res .im .fr{position:relative;width:92%;display:block}
+  .tv-res .im .fr img{width:100%;display:block}
+  .tv-res .im .lampo{position:absolute;inset:0;pointer-events:none;opacity:0;
+    -webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat;
+    background:linear-gradient(104deg,transparent 43%,rgba(255,255,255,.18) 47%,rgba(255,255,255,.85) 50%,rgba(255,255,255,.18) 53%,transparent 57%) 82% 0/300% 100% no-repeat}
+  .tv-res .im .scia{position:absolute;left:50%;top:50%;width:min(64%,420px);aspect-ratio:1;margin:calc(min(64%,420px) / -2) 0 0 calc(min(64%,420px) / -2);
+    border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.95),rgba(255,255,255,0));opacity:0;pointer-events:none;z-index:-1}
+  .tv-res .tx > *{transition:opacity .7s ease,transform .9s var(--ease);transition-delay:calc(var(--i,0) * 80ms)}
+  .tv-res.show .tx > .sv{opacity:0;transform:translateY(16px);pointer-events:none;transition:none}
+  .tv-res.show{cursor:pointer}
+  .tv-res .tv-nome{min-height:1em}
   .tv-res .tx{grid-column:7/13}
   .tv-nome{font-weight:700;font-size:clamp(40px,5vw,72px);letter-spacing:-.035em;line-height:1;margin:4px 0 14px}
   .tv-var{font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--grigio);margin-bottom:18px}
@@ -466,11 +509,6 @@
   .bt-stage .wm{font-size:120cqw;left:var(--wx,18%);top:-12%;transition:left .9s var(--ease)}
   .bt-lay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
   .bt-lay.cut{object-fit:contain;padding:0 9%;filter:drop-shadow(0 20px 24px rgba(0,0,0,.14))}
-  #btB{opacity:0;z-index:2}
-  .bt-sweep{position:absolute;left:0;right:0;top:0;height:1px;background:var(--ink);opacity:0;pointer-events:none;z-index:3}
-  .bt-star{position:absolute;right:18px;bottom:16px;width:9px;height:17px;color:var(--ink);opacity:0;z-index:3}
-  .bt-star.go{animation:btStar 1.1s ease forwards}
-  @keyframes btStar{0%{opacity:0;transform:translateY(7px) scale(.6)}40%{opacity:1;transform:none}100%{opacity:.6;transform:none}}
   .bt-view{display:flex;gap:1px;background:var(--linea-n);border-top:1px solid var(--linea-n)}
   .bt-view button{flex:1;padding:0;opacity:.42;transition:opacity .2s;background-color:var(--carta)}
   @media(hover:hover) and (pointer:fine){ .bt-view button.on,.bt-view button:hover{opacity:1} }
@@ -849,7 +887,7 @@
     <svg class="s orn-l" aria-hidden="true"><use href="#s"/></svg>
     <button class="hero-cap" id="heroCap"><span><b id="heroNm"></b><small id="heroDt"></small></span><i aria-hidden="true">→</i></button>
     <div class="hero-tick" id="heroTick" role="group" aria-label="I sette volti"></div>
-    <span class="hf-cur" aria-hidden="true"><span><i>←</i>Trascina<i>→</i></span></span>
+    <span class="hf-cur" aria-hidden="true"><svg viewBox="0 0 46 46"><circle class="an" cx="23" cy="23" r="22.5"/><path class="fs" d="M19.5 19.5 16 23l3.5 3.5"/><path class="fd" d="M26.5 19.5 30 23l-3.5 3.5"/></svg></span>
   </div>
 </section>
 
@@ -952,6 +990,8 @@
   </div>
 </section>
 
+<div class="passo" id="passo" aria-hidden="true"><div class="riga"><svg class="s"><use href="#s"/></svg><b></b></div></div>
+
 <section class="trova carta" id="trova" aria-labelledby="tvTit">
   <span class="wm" aria-hidden="true">T</span>
   <div class="trova-in">
@@ -969,9 +1009,6 @@
         <div class="bt-stage" id="btStage">
           <span class="wm" id="btWm" aria-hidden="true"></span>
           <img class="bt-lay" id="btA" alt="">
-          <img class="bt-lay" id="btB" alt="" aria-hidden="true">
-          <i class="bt-sweep" id="btSweep" aria-hidden="true"></i>
-          <svg class="s bt-star" id="btStar" aria-hidden="true"><use href="#s"/></svg>
         </div>
         <div class="bt-view" id="btView"></div>
       </div>
@@ -1189,6 +1226,12 @@ const MODELLI = [
 const SCONTORNO = {22:22, 14:19, 17:21, 15:20, 1:1, 2:2, 20:4, 11:3, 12:14, 16:15, 6:13, 4:11, 5:12,
                    9:8, 18:9, 8:7, 3:5, 7:6, 19:10, 10:16, 21:18, 13:17};
 const CUT = c => `img-cut-${String(SCONTORNO[c]).padStart(2,'0')}.webp`;
+/* scarica e decodifica un'immagine una volta sola; chi la chiede dopo la trova pronta */
+const PRONTE = new Map();
+const caricaImg = src => {
+  if (!PRONTE.has(src)){ const i = new Image(); i.decoding = 'async'; i.src = src; PRONTE.set(src, (i.decode ? i.decode() : Promise.resolve()).catch(() => {})); }
+  return PRONTE.get(src);
+};
 
 const P=(c,n)=>`img-${c}-${n}.webp`;
 const imgs = c => [1,2,3].map(n => P(c,n));
@@ -1787,13 +1830,13 @@ const SWATCH = {
       <span class="lett" aria-hidden="true">${m.lettera}</span>
       <img class="worn" src="${big ? m.foto : m.ritratto}" loading="lazy" decoding="async" alt="">
       <svg class="s star" aria-hidden="true"><use href="#s"/></svg>
-      <span class="cut"><img src="${CUT(v.finiture[L.fin])}" loading="lazy" decoding="async" alt="${m.nome} “${v.codice}” ${v.colore}"></span>
+      <span class="cut"><span class="pila"><span class="ly"><img src="${CUT(v.finiture[L.fin])}" loading="lazy" decoding="async" alt="${m.nome} “${v.codice}” ${v.colore}"><i class="lampo" style="--m:url(${CUT(v.finiture[L.fin])})"></i></span></span></span>
       <button class="card-hit" aria-label="Apri ${m.nome}"></button>
       <div class="info">
         <div><span class="nm">${m.nome}</span><span class="pr">${nv} ${nv > 1 ? 'varianti' : 'variante'} · ${lentiDi(m)}</span>
           ${big ? `<span class="claim">${L.claim}</span>` : ''}</div>
         ${m.varianti.length > 1 ? `<div class="dots" role="group" aria-label="Colori di ${m.nome}">${m.varianti.map((x, k) =>
-          `<button data-vi="${k}" aria-pressed="${k === L.vi}" aria-label="${x.colore}" title="${x.colore}"><i style="background:${SWATCH[x.colore] || '#888'}"></i></button>`).join('')}</div>` : ''}
+          `<button data-vi="${k}" aria-pressed="${k === L.vi}" aria-label="${x.colore}" title="${x.colore}"><i style="background:${SWATCH[x.colore] || '#888'}"></i></button>`).join('')}<span class="anello" aria-hidden="true"></span></div>` : ''}
       </div>
     </article>`;
   };
@@ -1821,6 +1864,77 @@ const SWATCH = {
     grid.addEventListener('touchcancel', fine);
     grid.addEventListener('contextmenu', e => { if (e.target.closest('.card')) e.preventDefault(); });
   }
+  /* ---------- cambio colore: precarico, poi una passata di luce ----------
+     Il nuovo colore entra come strato sopra il vecchio: taglio netto che scorre verso il pallino scelto,
+     riflesso sagomato sull'acetato, il vecchio scivola via sotto. Un nuovo clic non aspetta: apre un altro
+     strato sopra quello in corso, quindi si puo' scorrere tra i colori senza scatti. */
+  const pronte = new Map();
+  const carica = src => {
+    if (!pronte.has(src)){ const i = new Image(); i.decoding = 'async'; i.src = src; pronte.set(src, i.decode().catch(() => {})); }
+    return pronte.get(src);
+  };
+  const srcDi = (m, vi) => { const v = m.varianti[vi]; return CUT(v.finiture[Object.keys(v.finiture)[0]]); };
+  const anello = (c, subito) => {
+    const d = c.querySelector('.dots'); if (!d) return;
+    const b = d.querySelector('button[aria-pressed="true"]'), a = d.querySelector('.anello');
+    if (!b || !b.offsetWidth) return;
+    if (subito) d.classList.add('subito');
+    a.style.width = a.style.height = b.offsetWidth + 'px'; a.style.top = b.offsetTop + 'px';
+    a.style.setProperty('--x', b.offsetLeft + 'px');
+    if (subito){ void a.offsetWidth; d.classList.remove('subito'); }
+  };
+  const tutteAnelli = () => grid.querySelectorAll('.card[data-mi]').forEach(c => anello(c, true));
+  tutteAnelli(); addEventListener('resize', tutteAnelli);
+  if (document.fonts) document.fonts.ready.then(tutteAnelli);
+  /* tutte le varianti (scontorni leggeri) si scaricano quando la collezione si avvicina: il primo cambio e' gia' pronto */
+  const vicino = new IntersectionObserver(es => {
+    if (!es.some(e => e.isIntersecting)) return; vicino.disconnect(); tutteAnelli();
+    MODELLI.forEach(m => { if (m.varianti.length > 1) m.varianti.forEach((_, k) => carica(srcDi(m, k))); });
+  }, { rootMargin: '600px 0px' });
+  vicino.observe(grid);
+  const EASE = 'cubic-bezier(.32,.72,.12,1)', D = 820;
+  const cambia = (c, vi) => {
+    const m = MODELLI[+c.dataset.mi], old = +c.dataset.vi;
+    if (vi === old) return;
+    const v = m.varianti[vi], fin = Object.keys(v.finiture)[0], src = CUT(v.finiture[fin]), dir = vi > old ? 1 : -1;
+    c.dataset.vi = vi; c.dataset.fin = fin; c.classList.add('scelta');
+    c.querySelectorAll('.dots button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.vi === vi));
+    anello(c);
+    const tok = c._tok = (c._tok || 0) + 1;
+    carica(src).then(() => {
+      if (c._tok !== tok) return;                       /* nel frattempo e' stato scelto un altro colore */
+      const cut = c.querySelector('.cut .pila');
+      const ly = document.createElement('span'); ly.className = 'ly';
+      ly.innerHTML = '<img alt=""><i class="lampo"></i>';
+      const im = ly.firstChild; im.src = src; im.alt = `${m.nome} “${v.codice}” ${v.colore}`;
+      ly.lastChild.style.setProperty('--m', `url(${src})`);
+      const sotto = [...cut.children];
+      cut.appendChild(ly);
+      while (cut.children.length > 4) cut.firstElementChild.remove();
+      const pulisci = () => { if (!ly.isConnected) return; while (cut.firstElementChild && cut.firstElementChild !== ly) cut.firstElementChild.remove(); };
+      if (REDUCE){ ly.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220 }).finished.then(pulisci, () => {}); return; }
+      const pieno = 'inset(-30% -30% -45% -30%)';
+      const da = dir > 0 ? 'inset(-30% 130% -45% -30%)' : 'inset(-30% -30% -45% 130%)';
+      ly.animate([
+        { clipPath: da, transform: 'scale(1.018)' },
+        { clipPath: pieno, transform: 'none' }
+      ], { duration: D, easing: EASE }).finished.then(pulisci, () => {});
+      ly.lastChild.animate([
+        { backgroundPosition: dir > 0 ? '82% 0' : '18% 0', opacity: 0 },
+        { opacity: 1, offset: .12 },
+        { opacity: .9, offset: .55 },
+        { backgroundPosition: dir > 0 ? '18% 0' : '82% 0', opacity: 0 }
+      ], { duration: D + 140, easing: EASE });
+      /* il vecchio colore resta pieno e allineato sotto il taglio, e si spegne solo quando e' coperto */
+      sotto.forEach(o => o.animate([{ opacity: 1, offset: .32 }, { opacity: 0, offset: .62 }, { opacity: 0 }], { duration: D, easing: 'linear', fill: 'forwards' }));
+    });
+  };
+  /* computer: basta passare sopra i pallini per scorrere i colori */
+  grid.addEventListener('pointerover', e => {
+    if (e.pointerType !== 'mouse') return;
+    const dot = e.target.closest('.dots button'), c = dot && dot.closest('.card[data-mi]');
+    if (c) cambia(c, +dot.dataset.vi);
+  });
   /* il ritratto compare passando sull'immagine, non sulla riga dei colori */
   grid.addEventListener('pointerover', e => {
     if (e.pointerType !== 'mouse') return;
@@ -1834,16 +1948,7 @@ const SWATCH = {
     const c = e.target.closest('.card[data-mi]'); if (!c) return;
     const mi = +c.dataset.mi, m = MODELLI[mi];
     const dot = e.target.closest('.dots button');
-    if (dot){
-      const vi = +dot.dataset.vi, v = m.varianti[vi], fin = Object.keys(v.finiture)[0];
-      c.dataset.vi = vi; c.dataset.fin = fin;
-      c.querySelectorAll('.dots button').forEach(b => b.setAttribute('aria-pressed', b === dot));
-      c.classList.remove('scelta'); void c.offsetWidth; c.classList.add('scelta');
-      const im = c.querySelector('.cut img');
-      im.style.opacity = 0;
-      setTimeout(() => { im.src = CUT(v.finiture[fin]); im.alt = `${m.nome} “${v.codice}” ${v.colore}`; im.style.opacity = ''; }, REDUCE ? 0 : 160);
-      return;
-    }
+    if (dot){ cambia(c, +dot.dataset.vi); return; }
     if (e.target.closest('.card-hit')) openProduct(m, mi, +c.dataset.vi, c.dataset.fin);
   });
 })();
@@ -1992,7 +2097,50 @@ if (!REDUCE) requestAnimationFrame(archFrame);
 
 /* ---------- ricarica: si riparte dall'alto, non da dove si era ---------- */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-if (!location.hash) addEventListener('load', () => scrollTo(0, 0));
+/* ricaricando si riparte sempre dall'inizio: un vecchio #sezione rimasto nell'indirizzo non deve riportare li'.
+   Restano validi solo i link diretti ai modelli (#/riri/02/Sole), che aprono la scheda. */
+if (location.hash && !location.hash.startsWith('#/')){ try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} }
+if (!location.hash.startsWith('#/')){
+  const inCima = () => scrollTo({ top: 0, behavior: 'instant' });
+  inCima(); addEventListener('load', inCima);
+  addEventListener('pageshow', e => { if (e.persisted) inCima(); });
+}
+
+/* passaggio: invece di correre lungo la pagina, un sipario sale, il sito si sposta sotto e il sipario si apre sulla sezione */
+const passaggio = (() => {
+  const P = document.getElementById('passo'), riga = P.querySelector('.riga'), tit = P.querySelector('b');
+  let attivo = false;
+  const salta = el => { el.scrollIntoView({ behavior: 'instant', block: 'start' }); };
+  return el => {
+    if (!el) return;
+    if (REDUCE || attivo){ salta(el); return; }
+    attivo = true;
+    const h = el.id === 'top' ? 'Koshira' : (el.querySelector('.titolo-g, h2') || {}).textContent || '';
+    tit.textContent = h.trim();
+    P.classList.add('su');
+    const IN = 'cubic-bezier(.7,0,.25,1)', OUT = 'cubic-bezier(.65,0,.2,1)';
+    P.animate([{ clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 400, easing: IN, fill: 'forwards' });
+    riga.animate([{ transform: 'translateY(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 120, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
+    setTimeout(() => {
+      salta(el);
+      setTimeout(() => {
+        riga.animate([{ transform: 'translateY(-30px)', opacity: 0 }], { duration: 320, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' });
+        P.animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 540, delay: 80, easing: OUT, fill: 'forwards' })
+          .finished.then(() => { P.classList.remove('su'); P.getAnimations().forEach(a => a.cancel()); riga.getAnimations().forEach(a => a.cancel()); attivo = false; });
+      }, 260);
+    }, 420);
+  };
+})();
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+  const h = a.getAttribute('href');
+  if (h.length < 2 || h.startsWith('#/')) return;
+  const el = document.getElementById(h.slice(1));
+  if (!el || el.closest('.overlay,.drawer,.vs')) return;
+  e.preventDefault();
+  passaggio(el);
+});
 
 /* ---------- rivelazione allo scroll ---------- */
 const ioRivela = new IntersectionObserver(es => {
@@ -2037,10 +2185,11 @@ tvGrid.addEventListener('click', e => {
   if (opt) return tvPick(+opt.dataset.k);
   if (e.target.closest('#tvCta') && tvLast) return openProduct(tvLast.m, tvLast.mi, tvLast.vi, tvLast.fin);
   if (e.target.closest('#tvAdd') && tvLast) return aggiungi(tvLast.mi, tvLast.vi, tvLast.fin);
-  if (e.target.closest('#tvBanco') && tvLast && window.bancoSu){ window.bancoSu(tvLast.mi, tvLast.vi, tvLast.fin); document.getElementById('banco').scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth' }); return; }
-  if (e.target.closest('#tvAgain')){ tvStep = 0; tvScore = {}; tvCol = 'nero'; tvLast = null; tvRender(); }
+  if (e.target.closest('#tvBanco') && tvLast && window.bancoSu){ window.bancoSu(tvLast.mi, tvLast.vi, tvLast.fin); passaggio(document.getElementById('banco')); return; }
+  if (e.target.closest('#tvAgain')){ tvShow++; tvStep = 0; tvScore = {}; tvCol = 'nero'; tvLast = null; tvRender(); }
 });
 function tvRender(){
+  tvShow++;
   const s = QUIZ[tvStep];
   tvSwap(`
     <div class="tv-q">
@@ -2075,23 +2224,65 @@ function tvResult(){
   const v = best.varianti[vi];
   const fin = Object.keys(v.finiture)[0];
   tvLast = { m: best, mi, vi, fin };
-  tvSwap(`
-    <div class="tv-res">
-      <div class="im"><img src="${CUT(v.finiture[fin])}" alt="${best.nome} “${v.codice}” ${v.colore}"></div>
+  const fine = CUT(v.finiture[fin]);
+  const html = `
+    <div class="tv-res${REDUCE ? '' : ' show'}">
+      <div class="im"><i class="scia" aria-hidden="true"></i><span class="fr"><img src="${fine}" alt="${best.nome} “${v.codice}” ${v.colore}"><i class="lampo" aria-hidden="true" style="--m:url(${fine})"></i></span></div>
       <div class="tx">
         <div class="tv-step">La tua forma</div>
         <div class="tv-nome" tabindex="-1">${best.nome}</div>
-        <div class="tv-var">N. ${N2(numDi(mi, vi, fin))} · “${v.codice}” ${v.colore} · ${lenteDi(best, v, fin)}${best.misure ? ' · ' + best.misure.c + '▫' + best.misure.p + ' ' + best.misure.a : ''}</div>
-        <p>${best.desc}</p>
-        <div class="cz-az">
+        <div class="tv-var sv" style="--i:0">N. ${N2(numDi(mi, vi, fin))} · “${v.codice}” ${v.colore} · ${lenteDi(best, v, fin)}${best.misure ? ' · ' + best.misure.c + '▫' + best.misure.p + ' ' + best.misure.a : ''}</div>
+        <p class="sv" style="--i:1">${best.desc}</p>
+        <div class="cz-az sv" style="--i:2">
           <span class="cz-prezzo">${fmt(prezzoDi(best, v, fin))}</span>
           <button class="btn pieno" id="tvCta">Vedi il modello</button>
           <button class="btn filo" id="tvAdd">Aggiungi ${STAR}</button>
           <button class="btn filo" id="tvBanco">Cambia colore e lente</button>
         </div>
-        <button class="tv-again" id="tvAgain">Ricomincia</button>
+        <button class="tv-again sv" id="tvAgain" style="--i:3">Ricomincia</button>
       </div>
-    </div>`, '.tv-nome');
+    </div>`;
+  /* prima si scarica tutto (la ruota non deve mai aspettare un'immagine), poi parte lo show */
+  const giro = MODELLI.map(m => CUT(m.varianti[m.libro.vi].finiture[m.libro.fin]));
+  const mio = ++tvShow;
+  tvGrid.classList.add('fade');
+  Promise.all([...giro, fine].map(caricaImg).concat(new Promise(r => setTimeout(r, REDUCE ? 0 : 240)))).then(() => {
+    if (mio !== tvShow) return;
+    tvGrid.innerHTML = html;
+    tvGrid.classList.remove('fade');
+    if (REDUCE){ tvGrid.querySelector('.tv-nome').focus({ preventScroll: true }); return; }
+    tvSpettacolo(mio, mi, giro, fine);
+  });
+}
+let tvShow = 0;
+/* la ruota: le sette forme passano veloci e rallentano fino a fermarsi sulla tua */
+function tvSpettacolo(mio, mi, giro, fine){
+  const res = tvGrid.querySelector('.tv-res'), img = res.querySelector('.fr img'), nome = res.querySelector('.tv-nome');
+  const lampo = res.querySelector('.lampo'), scia = res.querySelector('.scia');
+  const N = MODELLI.length, passi = 2 * N + ((mi - 3 + N) % N) + 1;   /* due giri e mezzo, l'ultimo passo e' la tua */
+  let k = 0, t = null, chiuso = false;
+  const mostra = j => { img.src = giro[j]; nome.textContent = MODELLI[j].nome; };
+  const chiudi = () => {
+    if (chiuso || mio !== tvShow) return; chiuso = true; clearTimeout(t);
+    img.src = fine; nome.textContent = MODELLI[mi].nome;
+    const E = 'cubic-bezier(.16,1,.3,1)';
+    img.animate([{ transform: 'scale(1.09)', filter: 'drop-shadow(0 34px 30px rgba(0,0,0,.2))' }, { transform: 'none', filter: 'drop-shadow(0 18px 22px rgba(0,0,0,.14))' }], { duration: 1100, easing: E });
+    scia.animate([{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'scale(1.15)', offset: .3 }, { opacity: 0, transform: 'scale(1.5)' }], { duration: 1300, easing: 'ease-out' });
+    lampo.animate([{ backgroundPosition: '82% 0', opacity: 0 }, { opacity: 1, offset: .15 }, { opacity: .9, offset: .6 }, { backgroundPosition: '18% 0', opacity: 0 }], { duration: 1100, delay: 120, easing: E });
+    nome.animate([{ letterSpacing: '.02em', opacity: .4 }, { letterSpacing: '-.035em', opacity: 1 }], { duration: 900, easing: E });
+    res.classList.remove('show');
+    nome.focus({ preventScroll: true });
+  };
+  const passo = () => {
+    if (mio !== tvShow) return;
+    if (k >= passi - 1) return chiudi();
+    const j = (3 + k) % N; mostra(j);
+    img.animate([{ transform: 'translateY(-10px)', opacity: .35 }, { transform: 'none', opacity: 1 }], { duration: 160, easing: 'ease-out' });
+    const x = k / (passi - 1);
+    k++; t = setTimeout(passo, 55 + 340 * x * x * x);       /* veloce all'inizio, poi rallenta */
+  };
+  res.addEventListener('click', e => { if (res.classList.contains('show')){ e.stopPropagation(); chiudi(); } }, { capture: true });
+  passo();
 }
 tvRender();
 
@@ -2111,8 +2302,7 @@ renderCart();
     'Marrone trasparente':'#8a6a4a', 'Verde oliva':'#6b6b45',
     'Rosso trasparente':'#9c3b32', 'Grigio-blu':'#6f7a85', 'Cristallo':'#dcdcd8'
   };
-  const A = document.getElementById('btA'), B = document.getElementById('btB');
-  const sweep = document.getElementById('btSweep'), star = document.getElementById('btStar');
+  const A = document.getElementById('btA');
   const viewEl = document.getElementById('btView'), formeEl = document.getElementById('btForme');
   const coloriEl = document.getElementById('btColori'), lentiEl = document.getElementById('btLenti');
   const lenteBlock = document.getElementById('btLenteBlock'), live = document.getElementById('btLive');
@@ -2123,33 +2313,41 @@ renderCart();
   let PICS = [];
   const isCut = s => s.includes('img-cut-');
 
-  /* materializzazione: una sola transizione alla volta. Ogni nuovo clic annulla quella in corso,
-     cosi' due immagini non restano mai una sopra l'altra e la classe (scontorno o foto) segue sempre l'immagine */
+  /* cambio: l'occhiale nuovo scorre dentro mentre il vecchio scorre fuori, come su un nastro.
+     Sono sempre a una larghezza di distanza: non si sovrappongono mai. Un nuovo clic non aspetta:
+     il nastro riparte da dove si trova. L'immagine si scarica prima di muovere qualcosa. */
+  const pronte = new Map();
+  const carica = src => {
+    if (!pronte.has(src)){ const i = new Image(); i.decoding = 'async'; i.src = src; pronte.set(src, i.decode().catch(() => {})); }
+    return pronte.get(src);
+  };
   let giro = 0;
-  function paint(src, alt){
+  const EASE = 'cubic-bezier(.55,0,.1,1)', D = 820;
+  function paint(src, alt, dir = 1){
     const k = isCut(src) ? 'bt-lay cut' : 'bt-lay';
-    const mio = ++giro;               /* annulla qualunque transizione ancora in volo */
-    clearTimeout(paint._t);
-    if (A.getAttribute('src') === src){ A.alt = alt; A.className = k; B.style.transition = 'none'; B.style.opacity = '0'; sweep.style.opacity = '0'; return; }
-    const fine = () => { if (mio !== giro) return; A.className = k; A.src = src; A.alt = alt;
-      const via = () => { if (mio !== giro) return; B.style.transition = 'none'; B.style.opacity = '0'; };
-      A.decode ? A.decode().then(via, via) : via(); };
-    if (REDUCE){ fine(); return; }
-    const pre = new Image(); pre.src = src;
-    (pre.decode ? pre.decode() : Promise.resolve()).catch(() => {}).then(() => {
-      if (mio !== giro) return;
-      B.style.transition = 'none';
-      B.className = k; B.src = src;
-      B.style.clipPath = 'inset(0 0 100% 0)'; B.style.transform = 'scale(1.04)'; B.style.opacity = '1';
-      sweep.style.transition = 'none'; sweep.style.top = '0%'; sweep.style.opacity = '0';
-      void B.getBoundingClientRect();
-      B.style.transition = 'clip-path .6s cubic-bezier(.22,.7,.12,1), transform .9s cubic-bezier(.22,.7,.12,1)';
-      B.style.clipPath = 'inset(0 0 0 0)'; B.style.transform = 'scale(1)';
-      sweep.style.transition = 'top .6s cubic-bezier(.22,.7,.12,1)'; sweep.style.opacity = '1'; sweep.style.top = '100%';
-      star.classList.remove('go'); void star.getBoundingClientRect(); star.classList.add('go');
-      paint._t = setTimeout(() => { sweep.style.transition = 'opacity .25s ease'; sweep.style.opacity = '0'; fine(); }, 640);
+    const top = document.getElementById('btA');
+    const mio = ++giro;
+    if (top.getAttribute('src') === src){ top.alt = alt; top.className = k; return; }
+    carica(src).then(() => {
+      if (mio !== giro) return;                       /* nel frattempo e' stato scelto altro */
+      const L = document.createElement('img');
+      L.className = k; L.alt = alt; L.src = src; L.decoding = 'async';
+      const vecchi = [...stage.querySelectorAll('.bt-lay')];
+      vecchi.forEach(o => { o.removeAttribute('id'); o.alt = ''; o.setAttribute('aria-hidden', 'true'); });
+      L.id = 'btA';
+      vecchi[vecchi.length - 1].after(L);
+      if (REDUCE || !top.getAttribute('src')){ vecchi.forEach(o => o.remove()); return; }
+      L.animate([{ transform: `translateX(${dir * 100}%)` }, { transform: 'none' }], { duration: D, easing: EASE });
+      vecchi.forEach(o => o.animate([{ transform: `translateX(${-dir * 100}%)` }], { duration: D, easing: EASE, fill: 'forwards' })
+        .finished.then(() => o.remove(), () => {}));
+      while (stage.querySelectorAll('.bt-lay').length > 4) stage.querySelector('.bt-lay').remove();
     });
   }
+  /* tutte le forme e i colori si scaricano quando il banco si avvicina: il primo cambio e' gia' pronto */
+  new IntersectionObserver((es, o) => {
+    if (!es[0].isIntersecting) return; o.disconnect();
+    MODELLI.forEach(m => m.varianti.forEach(v => Object.values(v.finiture).forEach(f => carica(CUT(f)))));
+  }, { rootMargin: '800px 0px' }).observe(stage);
   function buildForme(){
     formeEl.innerHTML = MODELLI.map((x, k) => {
       const L = x.libro, f = x.varianti[L.vi].finiture[L.fin];
@@ -2179,7 +2377,7 @@ renderCart();
     viewEl.querySelectorAll('[data-shot]').forEach(b => b.classList.toggle('on', +b.dataset.shot === S.shot));
     wmEl.style.display = isCut(PICS[S.shot] || '') ? '' : 'none';
   }
-  function apply(level){
+  function apply(level, dir = 1){
     const m = MODELLI[S.mi];
     if(level === 0) S.vi = 0;
     const v = m.varianti[S.vi];
@@ -2200,18 +2398,21 @@ renderCart();
     const bm = document.getElementById('btMis');
     if(m.misure){ bm.style.display = ''; bm.innerHTML = misHtml(m); } else { bm.style.display = 'none'; bm.innerHTML = ''; }
     live.textContent = `${m.nome}, ${v.colore}${finLabel}. Pezzo ${n} di ${ARCH.length}.`;
-    paint(PICS[S.shot], `${m.nome} — ${v.colore}${finLabel}`);
+    paint(PICS[S.shot], `${m.nome} — ${v.colore}${finLabel}`, dir);
   }
   document.getElementById('btPanel').addEventListener('click', e => {
     const b = e.target.closest('button'); if(!b) return;
-    if(b.dataset.forma  !== undefined && +b.dataset.forma  !== S.mi){ S.mi = +b.dataset.forma;  apply(0); }
-    else if(b.dataset.colore !== undefined && +b.dataset.colore !== S.vi){ S.vi = +b.dataset.colore; apply(1); }
-    else if(b.dataset.lente  !== undefined && b.dataset.lente  !== S.f){ S.f = b.dataset.lente;  apply(2); }
+    /* il nastro va verso destra se scegli un elemento che sta dopo quello attuale, verso sinistra se sta prima */
+    if(b.dataset.forma  !== undefined && +b.dataset.forma  !== S.mi){ const d = +b.dataset.forma > S.mi ? 1 : -1; S.mi = +b.dataset.forma; apply(0, d); }
+    else if(b.dataset.colore !== undefined && +b.dataset.colore !== S.vi){ const d = +b.dataset.colore > S.vi ? 1 : -1; S.vi = +b.dataset.colore; apply(1, d); }
+    else if(b.dataset.lente  !== undefined && b.dataset.lente  !== S.f){ const fs = Object.keys(MODELLI[S.mi].varianti[S.vi].finiture);
+      const d = fs.indexOf(b.dataset.lente) > fs.indexOf(S.f) ? 1 : -1; S.f = b.dataset.lente; apply(2, d); }
   });
   viewEl.addEventListener('click', e => {
     const b = e.target.closest('[data-shot]'); if(!b) return;
     const k = +b.dataset.shot; if(k === S.shot) return;
-    S.shot = k; sync(); paint(PICS[k], A.alt);
+    const d = k > S.shot ? 1 : -1;
+    S.shot = k; sync(); paint(PICS[k], document.getElementById('btA').alt, d);
   });
   document.getElementById('btAdd').onclick = () => aggiungi(S.mi, S.vi, S.f);
   document.getElementById('btMore').onclick = () => openProduct(MODELLI[S.mi], S.mi, S.vi, S.f);
@@ -2257,6 +2458,7 @@ renderCart();
     <button class="vt-cell${v.colore ? ' colore' : ''}" data-v="${v.id}" style="--d:${i * 90}ms;--op:${v.op}"
             aria-label="${v.lab} — ${v.lista.length} pezzi">
       <img ${i < 3 ? '' : 'loading="lazy" '}decoding="async" src="${v.img}" alt="${v.alt}">
+      <i class="vt-buio" aria-hidden="true"></i>
       <span class="vt-in">
         <span class="vt-jp" aria-hidden="true">${v.jp}</span>
         <span class="vt-lab">${v.lab}</span>
@@ -2267,8 +2469,10 @@ renderCart();
     </button>`).join('');
 
   const sez = document.getElementById('vetrine');
-  if (REDUCE) sez.classList.add('in');
-  else new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { sez.classList.add('in'); o.disconnect(); } }, { threshold: .18 }).observe(sez);
+  if (REDUCE) sez.classList.add('in', 'aperte');
+  else new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { sez.classList.add('in'); o.disconnect();
+    /* finito l'ingresso il ritaglio non serve piu': toglierlo evita di ricalcolarlo a ogni apertura */
+    setTimeout(() => sez.classList.add('aperte'), 1700); } }, { threshold: .18 }).observe(sez);
 
   const vs = document.getElementById('vs'), vsGrid = document.getElementById('vsGrid');
   function apriVetrina(v){
@@ -2293,7 +2497,7 @@ renderCart();
   document.getElementById('vsClose').onclick = chiudiVetrina;
   row.querySelectorAll('.vt-cell').forEach(b => b.onclick = () => {
     const v = VETRINE.find(x => x.id === b.dataset.v);
-    if (v.vaiArchivio) { archSec.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth' }); return; }
+    if (v.vaiArchivio) { passaggio(archSec); return; }
     apriVetrina(v);
   });
 })();
